@@ -26,6 +26,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mockito:mockito-core:3.12.4'
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
 }
 
 tasks.withType(KotlinCompile) {
@@ -33,6 +35,9 @@ tasks.withType(KotlinCompile) {
 		freeCompilerArgs += '-Xjsr305=strict'
 		jvmTarget = '21'
 	}
+}
+test {
+    useJUnitPlatform()
 }
 
 tasks.named('test') {
