@@ -22,7 +22,7 @@ class ProductController(private val productService: ProductService) {
         return ResponseEntity.of(product)
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     fun updateProduct(@RequestBody product: Product): ResponseEntity<Product> {
         val updatedProduct = productService.updateProduct(product)
         return ResponseEntity.ok(updatedProduct)

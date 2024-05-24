@@ -12,7 +12,7 @@ class ProductService(private val productRepository: ProductRepository) {
         return productRepository.save(product)
     }
 
-    fun getProduct(id: UUID): Optional<Product> {
+    fun getProduct(id: UUID): Product? {
         return productRepository.findById(id)
     }
 
