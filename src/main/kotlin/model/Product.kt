@@ -20,8 +20,6 @@ data class Product(
     val stock: Stock? = null,
 
     @OneToMany(mappedBy = "product")
-    val orderProducts: List<OrderProduct> = mutableListOf(),
-
-    @OneToMany(mappedBy = "product")
     val categoryProducts: List<CategoryProduct> = mutableListOf()
 )
+

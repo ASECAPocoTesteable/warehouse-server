@@ -4,39 +4,65 @@ import model.Product
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import service.ProductService
+import util.productDTO
 import java.util.*
 
 @RestController
 @RequestMapping("/products")
 class ProductController(private val productService: ProductService) {
 
-    @PostMapping
+    @PostMapping("/add")
     fun createProduct(@RequestBody product: Product): ResponseEntity<Product> {
-        val createdProduct = productService.createProduct(product)
-        return ResponseEntity.ok(createdProduct)
+      try {
+          val createdProduct = productService.createProduct(product)
+          return ResponseEntity.ok(createdProduct)
+      }
+        catch (e: RuntimeException) {
+            return ResponseEntity.notFound().build()
+        }
     }
 
     @GetMapping("/{id}")
     fun getProduct(@PathVariable id: UUID): ResponseEntity<Product> {
+    try {
         val product = productService.getProduct(id)
-        return ResponseEntity.of(product)
+        return product?.let { ResponseEntity.ok().body(it) } ?: ResponseEntity.notFound().build()
     }
+    catch (e: RuntimeException) {
+        return ResponseEntity.notFound().build()
+    }
+}
 
     @PutMapping("/{id}")
     fun updateProduct(@RequestBody product: Product): ResponseEntity<Product> {
-        val updatedProduct = productService.updateProduct(product)
-        return ResponseEntity.ok(updatedProduct)
+       try {
+           val updatedProduct = productService.updateProduct(product)
+           return ResponseEntity.ok(updatedProduct)
+       }
+        catch (e: RuntimeException) {
+            return ResponseEntity.notFound().build()
+       }
     }
 
     @DeleteMapping("/{id}")
     fun deleteProduct(@PathVariable id: UUID): ResponseEntity<Void> {
-        productService.deleteProduct(id)
-        return ResponseEntity.noContent().build()
+       try {
+           productService.deleteProduct(id)
+           return ResponseEntity.noContent().build()
+       }
+        catch (e: RuntimeException) {
+            return ResponseEntity.notFound().build()
+       }
     }
 
     @GetMapping("/name/{name}")
     fun findByName(@PathVariable name: String): ResponseEntity<Product> {
-        val product = productService.findByName(name)
-        return ResponseEntity.of(Optional.ofNullable(product))
+       try {
+           val product = productService.findByName(name)
+           return ResponseEntity.of(Optional.ofNullable(product))
+       }
+        catch (e: RuntimeException) {
+            return ResponseEntity.notFound().build()
+       }
     }
 }

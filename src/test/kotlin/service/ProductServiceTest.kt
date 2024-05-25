@@ -1,5 +1,6 @@
 package service
 
+import model.Category
 import model.Product
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -24,7 +25,7 @@ class ProductServiceTest {
     @BeforeEach
     fun setup() {
         productService = ProductService(productRepository)
-        product = Product(UUID.randomUUID(), "Test Product")
+        product = Product(UUID.randomUUID(), "Test Product", "Test Description", categoryProducts = List<Category>{ Category(UUID.randomUUID(), "Test Category") })
     }
 
     @Test

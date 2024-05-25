@@ -1,5 +1,6 @@
 package model
 
+import jakarta.annotation.Nullable
 import jakarta.persistence.*
 import java.util.UUID
 
@@ -16,5 +17,6 @@ data class Category(
     val description: String? = null,
 
     @OneToMany(mappedBy = "category")
+    @Nullable
     val categoryProducts: List<CategoryProduct> = mutableListOf()
 )

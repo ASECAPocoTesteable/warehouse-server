@@ -10,7 +10,11 @@ data class Stock(
     val id: UUID = UUID.randomUUID(),
 
     @Column(nullable = false)
-    val quantity: Int,
+    var quantity: Int,
+
+    @OneToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    val product: Product,
 
     @OneToMany(mappedBy = "stock")
     val shopWarehouseStocks: List<ShopWarehouseStock> = mutableListOf()
