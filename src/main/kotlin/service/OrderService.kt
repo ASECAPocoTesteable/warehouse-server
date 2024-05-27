@@ -57,4 +57,8 @@ class OrderService(
 
     @Transactional(readOnly = true)
     fun getOrderById(id: UUID): Order = orderRepository.findById(id).orElseThrow { NoSuchElementException("Order not found") }
+    fun getOrderStatus(id: UUID): String? {
+        val order = orderRepository.findById(id).orElseThrow { NoSuchElementException("Order not found") }
+        return order.status.name
+    }
 }

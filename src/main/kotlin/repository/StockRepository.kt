@@ -18,5 +18,8 @@ interface StockRepository : JpaRepository<Stock, UUID> {
     fun getStock(): List<Stock>
 
     @Query("SELECT s FROM Stock s WHERE s.product.id = :productId")
-    fun findByProductId(productId: UUID): Stock
+    fun findByProductId(productId: UUID): List<Stock>
+
+    @Query("SELECT s.quantity FROM Stock s WHERE s.product.id = :productId AND s.warehouse.id = :warehouseId")
+    fun findByProductIdAndWarehouseId(productId: UUID, warehouseId: UUID): Int
 }

@@ -13,14 +13,37 @@ import java.util.UUID
 class StockController(@Autowired private val stockService: StockService) {
 
     @PutMapping("/{id}")
-    fun updateStock(@PathVariable id: UUID, @RequestBody stockDTO: StockDTO): ResponseEntity<Stock> =
-        ResponseEntity.ok(stockService.updateStock(id, stockDTO))
+    fun updateStock(@PathVariable id: UUID, @RequestBody stockDTO: StockDTO): ResponseEntity<Stock>{
+        return try {
+            ResponseEntity.ok(stockService.updateStock(id, stockDTO))
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.notFound().build()
+        }
+    }
 
     @GetMapping("/{id}")
-    fun getStockById(@PathVariable id: UUID): ResponseEntity<Stock> =
-        ResponseEntity.ok(stockService.getStockById(id))
+    fun getStockById(@PathVariable id: UUID): ResponseEntity<Stock>{
+        return try {
+            ResponseEntity.ok(stockService.getStockById(id))
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.notFound().build()
+        }
+    }
 
     @GetMapping("/check/{productId}")
-    fun checkStock(@PathVariable productId: UUID): ResponseEntity<Int> =
-        ResponseEntity.ok(stockService.checkStock(productId))
+    fun checkStock(@PathVariable productId: UUID): ResponseEntity<List<Stock>> {
+        return try {
+            ResponseEntity.ok(stockService.checkStock(productId))
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @GetMapping("/product/{productId}/{warehouseId}")
+    fun getStockByProductAndWarehouse(@PathVariable productId: UUID, @PathVariable warehouseId: UUID): ResponseEntity<Int> =
+       try {
+              ResponseEntity.ok(stockService.getStockByProductAndWarehouse(productId, warehouseId))
+         } catch (e: NoSuchElementException) {
+              ResponseEntity.notFound().build()
+       }
 }

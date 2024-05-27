@@ -23,21 +23,29 @@ class StockService(@Autowired private val stockRepository: StockRepository) {
         stockRepository.findById(id).orElseThrow { NoSuchElementException("Stock not found") }
 
     @Transactional(readOnly = true)
-    fun checkStock(productId: UUID): Int {
+    fun checkStock(productId: UUID): List<Stock> {
         val stock = stockRepository.findByProductId(productId)
-        return stock.quantity
+        return stock
     }
 
     @Transactional
     fun createStock(stock: Stock): Stock {
-        val existingStock = stockRepository.findByProductId(stock.product.id)
+        val existingStocks = stockRepository.findByProductId(stock.product.id)
+        val existingStock = existingStocks.find { it.warehouse.id == stock.warehouse.id }
+
         if (existingStock != null) {
             existingStock.quantity += stock.quantity
             return stockRepository.save(existingStock)
         }
+
         if (stock.quantity < 0) {
             throw IllegalArgumentException("Quantity should be greater or equal than 0")
         }
+
         return stockRepository.save(stock)
+    }
+
+    fun getStockByProductAndWarehouse(productId: UUID, warehouseId: UUID): Int {
+        return stockRepository.findByProductIdAndWarehouseId(productId, warehouseId)
     }
 }

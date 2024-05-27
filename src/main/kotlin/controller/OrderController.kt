@@ -48,4 +48,12 @@ class OrderController(@Autowired private val orderService: OrderService) {
             ResponseEntity.notFound().build()
         }
     }
+    @GetMapping("/status/{id}")
+    fun getOrderStatus(@PathVariable id: UUID): ResponseEntity<String> {
+        return try {
+            ResponseEntity.ok(orderService.getOrderStatus(id))
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.notFound().build()
+        }
+    }
 }
