@@ -10,16 +10,9 @@ data class Product(
     val id: UUID = UUID.randomUUID(),
 
     @Column(nullable = false)
-    val name: String,
-
-    @Column(nullable = true)
-    val description: String?,
+    var name: String,
 
     @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     @JoinColumn(name = "stock_id", referencedColumnName = "id")
     val stock: Stock? = null,
-
-    @OneToMany(mappedBy = "product")
-    val categoryProducts: List<CategoryProduct> = mutableListOf()
 )
-

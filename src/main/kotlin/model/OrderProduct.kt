@@ -18,5 +18,5 @@ data class OrderProduct(
     val order: Order,
 
     @Column(nullable = false)
-    val quantity: Int
+    var quantity: Int
 )

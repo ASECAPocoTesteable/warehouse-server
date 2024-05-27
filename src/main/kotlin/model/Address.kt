@@ -11,18 +11,17 @@ class Address {
     val id: UUID = UUID.randomUUID()
 
     @Column(nullable = false)
-    val street1 : String = ""
+    val street1: String = ""
 
     @Column(nullable = true)
-    val street2 : String? = null
+    val street2: String? = null
 
     @Column(nullable = false)
-    val city : String = ""
+    val city: String = ""
 
     @Column(nullable = false)
-    val zipcode : String = ""
+    val zipcode: String = ""
 
     @Column(nullable = false)
-    val number : Int = 0
-
+    val number: Int = 0
 }

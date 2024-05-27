@@ -16,6 +16,7 @@ data class Stock(
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     val product: Product,
 
-    @OneToMany(mappedBy = "stock")
-    val shopWarehouseStocks: List<ShopWarehouseStock> = mutableListOf()
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_id", referencedColumnName = "id")
+    val warehouse: Warehouse
 )

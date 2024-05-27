@@ -16,6 +16,6 @@ data class Warehouse(
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     val address: Address,
 
-    @OneToMany(mappedBy = "warehouse")
-    val shopWarehouses: List<ShopWarehouse> = mutableListOf()
+    @OneToMany(mappedBy = "warehouse", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    val stockItems: List<Stock> = mutableListOf()
 )

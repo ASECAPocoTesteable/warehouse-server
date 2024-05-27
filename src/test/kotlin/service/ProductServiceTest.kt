@@ -1,16 +1,14 @@
 package service
 
-import model.Category
 import model.Product
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import repository.ProductRepository
-import java.util.*
 
 @SpringBootTest
 class ProductServiceTest {
@@ -25,7 +23,6 @@ class ProductServiceTest {
     @BeforeEach
     fun setup() {
         productService = ProductService(productRepository)
-        product = Product(UUID.randomUUID(), "Test Product", "Test Description", categoryProducts = List<Category>{ Category(UUID.randomUUID(), "Test Category") })
     }
 
     @Test
@@ -39,7 +36,7 @@ class ProductServiceTest {
 
     @Test
     fun `should get product by id`() {
-        `when`(productRepository.findById(product.id)).thenReturn(Optional.of(product))
+        `when`(productRepository.findById(product.id)).thenReturn(product)
 
         productService.getProduct(product.id)
 

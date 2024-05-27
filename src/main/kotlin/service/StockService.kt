@@ -1,33 +1,43 @@
 package service
 
 import model.Stock
-import org.springframework.stereotype.Service
-import repository.ProductRepository
 import repository.StockRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import util.StockDTO
 import java.util.UUID
 
 @Service
-class StockService(private val productRepository: ProductRepository, private val stockRepository: StockRepository) {
+class StockService(@Autowired private val stockRepository: StockRepository) {
 
-    fun getStock(): List<Stock>{
-        return stockRepository.getStock()
+    @Transactional
+    fun updateStock(id: UUID, stockDTO: StockDTO): Stock {
+        val stock = stockRepository.findById(id).orElseThrow { NoSuchElementException("Stock not found") }
+        stock.quantity = stockDTO.quantity
+        return stockRepository.save(stock)
     }
-    fun getStockByProductID(id: UUID) : Stock{
-        return stockRepository.getStockByProductID(id)
+
+    @Transactional(readOnly = true)
+    fun getStockById(id: UUID): Stock =
+        stockRepository.findById(id).orElseThrow { NoSuchElementException("Stock not found") }
+
+    @Transactional(readOnly = true)
+    fun checkStock(productId: UUID): Int {
+        val stock = stockRepository.findByProductId(productId)
+        return stock.quantity
     }
-    fun updateStock(id: UUID, quantity: Int) : Stock{
-         val stock = stockRepository.getStockByProductID(id)
-            stock.quantity = quantity
-            stockRepository.save(stock)
-        return stock
-    }
-    fun deleteStock(id: UUID) {
-         stockRepository.deleteById(id)
-    }
-    fun createStock(quantity: Int, productId: UUID) : Stock{
-        val product = productRepository.findById(productId) ?: throw RuntimeException("Product not found")
-        val stock = Stock(quantity = quantity , product = product)
-        stockRepository.save(stock)
-        return stock
+
+    @Transactional
+    fun createStock(stock: Stock): Stock {
+        val existingStock = stockRepository.findByProductId(stock.product.id)
+        if (existingStock != null) {
+            existingStock.quantity += stock.quantity
+            return stockRepository.save(existingStock)
+        }
+        if (stock.quantity < 0) {
+            throw IllegalArgumentException("Quantity should be greater or equal than 0")
+        }
+        return stockRepository.save(stock)
     }
 }

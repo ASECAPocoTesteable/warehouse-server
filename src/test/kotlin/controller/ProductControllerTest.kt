@@ -11,10 +11,13 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import service.ProductService
-import java.util.*
+import java.util.UUID
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -48,7 +51,7 @@ class ProductControllerTest {
 
     @Test
     fun `should get product by id`() {
-        Mockito.`when`(productService.getProduct(product.id)).thenReturn(Optional.of(product))
+        Mockito.`when`(productService.getProduct(product.id)).thenReturn(product)
 
         mockMvc.perform(
             get("/products/${product.id}")

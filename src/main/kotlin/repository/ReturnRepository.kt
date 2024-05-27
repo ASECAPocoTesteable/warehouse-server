@@ -1,4 +1,3 @@
 package repository
 
-interface ReturnRepository {
-}
+interface ReturnRepository
