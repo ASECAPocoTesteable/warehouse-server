@@ -10,11 +10,11 @@ data class Warehouse(
     val id: UUID = UUID.randomUUID(),
 
     @Column(nullable = false)
-    val name: String = "",
+    var name: String = "",
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
-    val address: Address,
+    var address: Address,
 
     @OneToMany(mappedBy = "warehouse", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     val stockItems: List<Stock> = mutableListOf()

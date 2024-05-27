@@ -25,7 +25,7 @@ class ProductController(private val productService: ProductService) {
     fun getProduct(@PathVariable id: UUID): ResponseEntity<Product> {
         try {
             val product = productService.getProduct(id)
-            return product?.let { ResponseEntity.ok().body(it) } ?: ResponseEntity.notFound().build()
+            return product.let { ResponseEntity.ok().body(it) }
         } catch (e: RuntimeException) {
             return ResponseEntity.notFound().build()
         }

@@ -5,23 +5,23 @@ import java.util.*
 
 @Entity
 @Table(name = "addresses")
-class Address {
+data class Address(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: UUID = UUID.randomUUID()
+    val id: UUID = UUID.randomUUID(),
 
     @Column(nullable = false)
-    val street1: String = ""
+    var street1: String = "",
 
     @Column(nullable = true)
-    val street2: String? = null
+    var street2: String? = null,
 
     @Column(nullable = false)
-    val city: String = ""
+    var city: String = "",
 
     @Column(nullable = false)
-    val zipcode: String = ""
+    var zipcode: String = "",
 
     @Column(nullable = false)
-    val number: Int = 0
-}
+    var number: Int = 0
+)
