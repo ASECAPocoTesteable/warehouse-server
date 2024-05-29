@@ -6,7 +6,8 @@ data class OrderDTO(
     val id : Long,
     val status: STATUS,
     val orderProducts: List<OrderProductDTO>,
-    val warehouseId: Long
+    val warehouseId: Long,
+    val shopId: Long
 )
 
 data class OrderProductDTO(
