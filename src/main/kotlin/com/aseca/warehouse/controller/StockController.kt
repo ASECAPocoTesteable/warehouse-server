@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import com.aseca.warehouse.util.StockDTO
+import com.aseca.warehouse.util.ProductStockRequestDto
 
 @RestController
 class StockController(@Autowired private val stockService: StockService) {
@@ -28,10 +29,10 @@ class StockController(@Autowired private val stockService: StockService) {
         }
     }
 
-    @GetMapping("/stocks/check/{productId}")
-    fun checkStock(@PathVariable productId: Long): ResponseEntity<List<Stock>> {
+    @GetMapping("/stocks/check")
+    fun checkStock(@RequestBody productStockRequestDto : ProductStockRequestDto): ResponseEntity<Boolean> {
         return try {
-            ResponseEntity.ok(stockService.checkStock(productId))
+            ResponseEntity.ok(stockService.checkStock(productStockRequestDto))
         } catch (e: NoSuchElementException) {
             ResponseEntity.notFound().build()
         }

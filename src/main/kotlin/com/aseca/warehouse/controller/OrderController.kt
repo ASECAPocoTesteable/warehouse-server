@@ -19,6 +19,16 @@ class OrderController(@Autowired private val orderService: OrderService) {
             ResponseEntity.badRequest().build()
         }
     }
+    @PostMapping("/check-and-create")
+fun checkStockAndCreateOrder(@RequestBody orderDTO: OrderDTO): ResponseEntity<Order> {
+    return try {
+        ResponseEntity.ok(orderService.checkStockAndCreateOrder(orderDTO))
+    } catch (e: IllegalArgumentException) {
+        ResponseEntity.badRequest().build()
+    } catch (e: NoSuchElementException) {
+        ResponseEntity.notFound().build()
+    }
+}
 
     @PutMapping("/orders/{id}")
     fun updateOrder(@PathVariable id: Long, @RequestBody orderDTO: OrderDTO): ResponseEntity<Order> {

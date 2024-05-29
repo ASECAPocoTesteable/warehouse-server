@@ -21,7 +21,7 @@ class ProductService(
         val product = Product(name = productDTO.name)
         val warehouse =
             warehouseRepository.findById(productDTO.warehouseId).orElseThrow { NoSuchElementException("Warehouse not found") }
-        val stock = Stock(quantity = productDTO.stockQuantity, product = product, warehouse = warehouse)
+        val stock = Stock(quantity = productDTO.stockQuantity, product = product, warehouse = warehouse, shopId = productDTO.shopId)
 
         stockRepository.save(stock)
         return productRepository.save(product)
