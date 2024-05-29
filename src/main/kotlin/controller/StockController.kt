@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import util.StockDTO
 import java.util.UUID
+import util.ProductStockRequestDto
 
 @RestController
 @RequestMapping("/stocks")
@@ -30,10 +31,10 @@ class StockController(@Autowired private val stockService: StockService) {
         }
     }
 
-    @GetMapping("/check/{productId}")
-    fun checkStock(@PathVariable productId: UUID): ResponseEntity<List<Stock>> {
+    @GetMapping("/check")
+    fun checkStock(@RequestBody productStockRequestDto : ProductStockRequestDto): ResponseEntity<Boolean> {
         return try {
-            ResponseEntity.ok(stockService.checkStock(productId))
+            ResponseEntity.ok(stockService.checkStock(productStockRequestDto))
         } catch (e: NoSuchElementException) {
             ResponseEntity.notFound().build()
         }

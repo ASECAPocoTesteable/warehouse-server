@@ -19,12 +19,14 @@ data class ProductDTO(
     val id: UUID,
     val name: String,
     val stockQuantity: Int,
-    val warehouseId: UUID
+    val warehouseId: UUID,
+    val shopId: UUID
 )
 
 data class StockDTO(
     val productId: UUID,
-    val quantity: Int
+    val quantity: Int,
+    val shopId: UUID
 )
 
 data class WarehouseDTO(
@@ -41,4 +43,13 @@ data class AddressDTO(
     val city: String,
     val zipcode: String,
     val number: Int
+)
+data class ProductStockRequestDto(
+    val productList: List<ProductStock>,
+    val shopId: UUID,
+)
+
+data class ProductStock(
+    val productId: UUID,
+    val quantity: Int,
 )

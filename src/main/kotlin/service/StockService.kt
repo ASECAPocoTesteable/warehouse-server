@@ -1,15 +1,18 @@
 package service
 
+import model.OrderProduct
 import model.Stock
 import repository.StockRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import util.OrderDTO
+import util.ProductStockRequestDto
 import util.StockDTO
 import java.util.UUID
 
 @Service
-class StockService(@Autowired private val stockRepository: StockRepository) {
+class StockService(@Autowired private val stockRepository: StockRepository, private val oderService: OrderService, private val productService: ProductService) {
 
     @Transactional
     fun updateStock(id: UUID, stockDTO: StockDTO): Stock {
@@ -23,9 +26,14 @@ class StockService(@Autowired private val stockRepository: StockRepository) {
         stockRepository.findById(id).orElseThrow { NoSuchElementException("Stock not found") }
 
     @Transactional(readOnly = true)
-    fun checkStock(productId: UUID): List<Stock> {
-        val stock = stockRepository.findByProductId(productId)
-        return stock
+    fun checkStock(stockRequest: ProductStockRequestDto): Boolean {
+          stockRequest.productList.forEach {
+                val stock = stockRepository.findByProductIdAndShopId(it.productId, stockRequest.shopId)
+                if (stock.quantity < it.quantity) {
+                 return false
+                }
+          }
+          return true
     }
 
     @Transactional

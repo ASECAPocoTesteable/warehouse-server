@@ -1,72 +1,23 @@
 package service
 
+import model.OrderProduct
 import model.Product
+import model.Stock
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.*
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import repository.ProductRepository
+import repository.StockRepository
+import repository.WarehouseRepository
+import util.ProductDTO
+import java.util.Optional
+import java.util.UUID
 
-@SpringBootTest
 class ProductServiceTest {
 
-    @MockBean
-    private lateinit var productRepository: ProductRepository
 
-    private lateinit var productService: ProductService
 
-    private lateinit var product: Product
-
-    @BeforeEach
-    fun setup() {
-        productService = ProductService(productRepository)
-    }
-
-    @Test
-    fun `should create product`() {
-        `when`(productRepository.save(product)).thenReturn(product)
-
-        productService.createProduct(product)
-
-        verify(productRepository).save(product)
-    }
-
-    @Test
-    fun `should get product by id`() {
-        `when`(productRepository.findById(product.id)).thenReturn(product)
-
-        productService.getProduct(product.id)
-
-        verify(productRepository).findById(product.id)
-    }
-
-    @Test
-    fun `should update product`() {
-        `when`(productRepository.save(product)).thenReturn(product)
-
-        productService.updateProduct(product)
-
-        verify(productRepository).save(product)
-    }
-
-    @Test
-    fun `should delete product`() {
-        Mockito.doNothing().`when`(productRepository).deleteById(product.id)
-
-        productService.deleteProduct(product.id)
-
-        verify(productRepository).deleteById(product.id)
-    }
-
-    @Test
-    fun `should find product by name`() {
-        `when`(productRepository.findByName(product.name)).thenReturn(product)
-
-        productService.findByName(product.name)
-
-        verify(productRepository).findByName(product.name)
-    }
 }

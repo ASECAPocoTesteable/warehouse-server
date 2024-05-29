@@ -18,5 +18,8 @@ data class Stock(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_id", referencedColumnName = "id")
-    val warehouse: Warehouse
+    val warehouse: Warehouse,
+
+    @Column(nullable = false)
+    val shopId: UUID
 )
