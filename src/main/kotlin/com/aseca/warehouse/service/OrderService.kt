@@ -63,23 +63,23 @@ class OrderService(
         return order.status.name
     }
  @Transactional
-fun checkStockAndCreateOrder(orderDTO: OrderDTO): Order {
-    val warehouse = findWarehouseById(orderDTO.warehouseId)
-    val order = Order(
-        status = orderDTO.status, warehouse = warehouse, orderProducts = mutableListOf()
-    )
-    val products = mutableListOf<OrderProduct>()
-    for (orderProductDTO in orderDTO.orderProducts) {
-        val product = productRepository.findById(orderProductDTO.productId) ?: throw NoSuchElementException("Product not found")
-        if ((product.stock?.quantity ?: 0) < orderProductDTO.quantity) {
-            throw IllegalArgumentException("Not enough stock for product: ${product.name}")
-        }
-        product.stock?.quantity = product.stock?.quantity?.minus(orderProductDTO.quantity) ?: 0
-        productRepository.save(product)
-        products.add(OrderProduct(order = order, product = product, quantity = orderProductDTO.quantity))
-    }
-    order.orderProducts = products
-    return orderRepository.save(order)
-}
-    private fun findWarehouseById(id: UUID) = warehouseRepository.findById(id).orElseThrow { NoSuchElementException("Warehouse not found") }
+ fun checkStockAndCreateOrder(orderDTO: OrderDTO): Order {
+     val warehouse = findWarehouseById(orderDTO.warehouseId)
+     val order = Order(
+         status = orderDTO.status, warehouse = warehouse, orderProducts = mutableListOf()
+     )
+     val products = mutableListOf<OrderProduct>()
+     for (orderProductDTO in orderDTO.orderProducts) {
+         val product = productRepository.findById(orderProductDTO.productId).orElseThrow() { NoSuchElementException("Product not found") }
+         if ((product.stock?.quantity ?: 0) < orderProductDTO.quantity) {
+             throw IllegalArgumentException("Not enough stock for product: ${product.name}")
+         }
+         product.stock?.quantity = product.stock?.quantity?.minus(orderProductDTO.quantity) ?: 0
+         productRepository.save(product)
+         products.add(OrderProduct(order = order, product = product, quantity = orderProductDTO.quantity))
+     }
+     order.orderProducts = products
+     return orderRepository.save(order)
+ }
+    private fun findWarehouseById(id: Long) = warehouseRepository.findById(id).orElseThrow { NoSuchElementException("Warehouse not found") }
 }

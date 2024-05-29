@@ -1,22 +1,9 @@
-package controller
+package com.aseca.warehouse.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import model.Product
+
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import service.ProductService
-import util.ProductDTO
-import java.util.UUID
+
 
 class ProductControllerTest {
     @Test
