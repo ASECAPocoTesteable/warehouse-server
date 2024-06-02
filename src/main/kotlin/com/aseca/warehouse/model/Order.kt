@@ -12,9 +12,6 @@ data class Order(
     @OneToMany(mappedBy = "order")
     var orderProducts: List<OrderProduct> = mutableListOf(),
 
-    @ManyToOne
-    @JoinColumn(name = "warehouse", referencedColumnName = "id")
-    val warehouse: Warehouse
 ){
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

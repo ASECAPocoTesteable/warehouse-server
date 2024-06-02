@@ -1,37 +1,29 @@
 package com.aseca.warehouse.controller
 
-import com.aseca.warehouse.model.Order
 import com.aseca.warehouse.service.OrderService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import com.aseca.warehouse.util.OrderDTO
-import java.util.UUID
 
 @RestController
+@RequestMapping("/order")
 class OrderController(@Autowired private val orderService: OrderService) {
 
-    @PostMapping("/orders/")
-    fun createOrder(@RequestBody orderDTO: OrderDTO, warehouseID: Long): ResponseEntity<Order> {
+
+    @PostMapping("/create")
+    fun createOrder(@RequestBody orderDTO: OrderDTO): ResponseEntity<OrderDTO> {
         return try {
             ResponseEntity.ok(orderService.createOrder(orderDTO))
         } catch (e: IllegalArgumentException) {
             ResponseEntity.badRequest().build()
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.notFound().build()
         }
     }
-    @PostMapping("/check-and-create")
-fun checkStockAndCreateOrder(@RequestBody orderDTO: OrderDTO): ResponseEntity<Order> {
-    return try {
-        ResponseEntity.ok(orderService.checkStockAndCreateOrder(orderDTO))
-    } catch (e: IllegalArgumentException) {
-        ResponseEntity.badRequest().build()
-    } catch (e: NoSuchElementException) {
-        ResponseEntity.notFound().build()
-    }
-}
 
     @PutMapping("/orders/{id}")
-    fun updateOrder(@PathVariable id: Long, @RequestBody orderDTO: OrderDTO): ResponseEntity<Order> {
+    fun updateOrder(@PathVariable id: Long, @RequestBody orderDTO: OrderDTO): ResponseEntity<OrderDTO> {
         return try {
             ResponseEntity.ok(orderService.updateOrder(orderDTO))
         } catch (e: NoSuchElementException) {
@@ -50,13 +42,14 @@ fun checkStockAndCreateOrder(@RequestBody orderDTO: OrderDTO): ResponseEntity<Or
     }
 
     @GetMapping("/orders/{id}")
-    fun getOrderById(@PathVariable id: Long): ResponseEntity<Order> {
+    fun getOrderById(@PathVariable id: Long): ResponseEntity<OrderDTO> {
         return try {
             ResponseEntity.ok(orderService.getOrderById(id))
         } catch (e: NoSuchElementException) {
             ResponseEntity.notFound().build()
         }
     }
+
     @GetMapping("/orders/status/{id}")
     fun getOrderStatus(@PathVariable id: Long): ResponseEntity<String> {
         return try {

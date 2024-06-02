@@ -8,9 +8,10 @@ import com.aseca.warehouse.util.ProductDTO
 import java.util.*
 
 @RestController
+@RequestMapping("/product")
 class ProductController(private val productService: ProductService) {
 
-    @PostMapping("/products/add")
+    @PostMapping("/add")
     fun createProduct(@RequestBody product: ProductDTO): ResponseEntity<Product> {
         try {
             val createdProduct = productService.createProduct(product)
@@ -20,7 +21,7 @@ class ProductController(private val productService: ProductService) {
         }
     }
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/{id}")
     fun getProduct(@PathVariable id: Long): ResponseEntity<Product> {
         try {
             val product = productService.getProduct(id)
@@ -30,7 +31,13 @@ class ProductController(private val productService: ProductService) {
         }
     }
 
-    @PutMapping("/products/{id}")
+    @GetMapping("/all")
+    fun getAllProducts(): ResponseEntity<List<Product>> {
+        val products = productService.getAllProducts()
+        return ResponseEntity.ok(products)
+    }
+
+    @PutMapping("/{id}")
     fun updateProduct(@RequestBody product: ProductDTO): ResponseEntity<Product> {
         try {
             val updatedProduct = productService.updateProduct(product)
@@ -40,7 +47,7 @@ class ProductController(private val productService: ProductService) {
         }
     }
 
-    @DeleteMapping("/products/{id}")
+    @DeleteMapping("/{id}")
     fun deleteProduct(@PathVariable id: Long): ResponseEntity<Void> {
         try {
             productService.deleteProduct(id)
@@ -50,10 +57,10 @@ class ProductController(private val productService: ProductService) {
         }
     }
 
-    @GetMapping("/products/name/{name}")
-    fun findByName(@PathVariable productDTO: ProductDTO): ResponseEntity<Product> {
+    @GetMapping("/name/{name}")
+    fun findByName(@PathVariable name: String): ResponseEntity<List<ProductDTO>> {
         try {
-            val product = productService.getProductById(productDTO.id)
+            val product : List<ProductDTO> = productService.getProductByName(name)
             return ResponseEntity.of(Optional.ofNullable(product))
         } catch (e: RuntimeException) {
             return ResponseEntity.notFound().build()

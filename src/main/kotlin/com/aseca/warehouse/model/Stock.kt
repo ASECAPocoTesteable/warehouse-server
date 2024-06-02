@@ -14,12 +14,6 @@ data class Stock(
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     val product: Product,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "warehouse_id", referencedColumnName = "id")
-    val warehouse: Warehouse,
-
-    @Column(nullable = false)
-    val shopId: Long
 )
 {
     @Id

@@ -25,32 +25,33 @@ class StockService(@Autowired private val stockRepository: StockRepository) {
     @Transactional(readOnly = true)
     fun checkStock(stockRequest: ProductStockRequestDto): Boolean {
         stockRequest.productList.forEach {
-            val stock = stockRepository.findByProductIdAndShopId(it.productId, stockRequest.shopId)
+            val stock = stockRepository.findByProductIdAndShopId(it.productId, )
             if (stock.quantity < it.quantity) {
                 return false
             }
         }
         return true
     }
+    @Transactional
+    fun reduceProductStock(productId: Long, quantity: Int) {
+        val productStock = stockRepository.findByProductId(productId)
+        if (productStock.isEmpty() || productStock[0].quantity < quantity) {
+            throw IllegalArgumentException("Not enough stock for product: $productId")
+        }
+        productStock[0].quantity -= quantity
+        stockRepository.save(productStock[0])
+    }
 
     @Transactional
     fun createStock(stock: Stock): Stock {
         val existingStocks = stockRepository.findByProductId(stock.product.id)
-        val existingStock = existingStocks.find { it.warehouse.id == stock.warehouse.id }
-
-        if (existingStock != null) {
-            existingStock.quantity += stock.quantity
-            return stockRepository.save(existingStock)
+        if (existingStocks.isNotEmpty()) {
+            throw IllegalArgumentException("Stock already exists")
         }
-
-        if (stock.quantity < 0) {
-            throw IllegalArgumentException("Quantity should be greater or equal than 0")
-        }
-
         return stockRepository.save(stock)
     }
 
-    fun getStockByProductAndWarehouse(productId: Long, warehouseId: Long): Int {
-        return stockRepository.findByProductIdAndWarehouseId(productId, warehouseId)
+    fun getStockByProductId(productId: Long): Int {
+        return stockRepository.findByProductIdAndWarehouseId(productId)
     }
 }

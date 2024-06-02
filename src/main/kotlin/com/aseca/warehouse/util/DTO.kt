@@ -5,9 +5,7 @@ import com.aseca.warehouse.model.STATUS
 data class OrderDTO(
     val id : Long,
     val status: STATUS,
-    val orderProducts: List<OrderProductDTO>,
-    val warehouseId: Long,
-    val shopId: Long
+    val orderProducts: List<OrderProductDTO>
 )
 
 data class OrderProductDTO(
@@ -18,22 +16,12 @@ data class OrderProductDTO(
 data class ProductDTO(
     val id: Long,
     val name: String,
-    val stockQuantity: Int,
-    val warehouseId: Long,
-    val shopId: Long
+    val stockQuantity: Int
 )
 
 data class StockDTO(
     val productId: Long,
-    val quantity: Int,
-    val shopId: Long
-)
-
-data class WarehouseDTO(
-    val id: Long,
-    val name: String,
-    val addressId: Long,
-    val stockItems: List<StockDTO>
+    val quantity: Int
 )
 
 data class AddressDTO(
@@ -46,7 +34,6 @@ data class AddressDTO(
 )
 data class ProductStockRequestDto(
     val productList: List<ProductStock>,
-    val shopId: Long,
 )
 
 data class ProductStock(
