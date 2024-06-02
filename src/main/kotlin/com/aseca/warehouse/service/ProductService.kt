@@ -16,6 +16,10 @@ class ProductService(
 
     @Transactional
     fun createProduct(productDTO: ProductDTO): Product {
+        if (productDTO.stockQuantity < 0) {
+            throw IllegalArgumentException("Product quantity cannot be negative")
+        }
+
         val product = Product(name = productDTO.name)
         val stock = Stock(quantity = productDTO.stockQuantity, product = product)
 
@@ -24,22 +28,19 @@ class ProductService(
     }
 
     @Transactional
-fun updateProduct(productDTO: ProductDTO): Product {
-    val product = productRepository.findById(productDTO.id).orElseThrow() { NoSuchElementException("Product not found") }
-    product.name = productDTO.name
-    if (product.stock == null) {
-        product.stock = Stock(productDTO.stockQuantity, product)
-    } else {
-        product.stock?.quantity = productDTO.stockQuantity
-    }
-    return productRepository.save(product)
-}
-    fun getAllProducts(): List<Product> = productRepository.findAll()
-
-    fun getProductByName(name: String): List<ProductDTO> {
-        return productRepository.findByName(name).map { product ->
-            ProductDTO(product.id, product.name, product.stock?.quantity ?: 0)
+    fun updateProduct(productDTO: ProductDTO): Product {
+        if (productDTO.stockQuantity < 0) {
+            throw IllegalArgumentException("Product quantity cannot be negative")
         }
+
+        val product = productRepository.findById(productDTO.id).orElseThrow() { NoSuchElementException("Product not found") }
+        product.name = productDTO.name
+        if (product.stock == null) {
+            product.stock = Stock(productDTO.stockQuantity, product)
+        } else {
+            product.stock?.quantity = productDTO.stockQuantity
+        }
+        return productRepository.save(product)
     }
 
     @Transactional
@@ -49,9 +50,16 @@ fun updateProduct(productDTO: ProductDTO): Product {
     fun getProductById(id: Long): Product {
         return productRepository.findById(id).orElseThrow() { NoSuchElementException("Product not found") }
     }
+    fun getProductByName(name: String): List<ProductDTO> {
+        return productRepository.findByName(name).map { product ->
+            ProductDTO(product.id, product.name, product.stock?.quantity ?: 0)
+        }
+    }
+
 
     fun getProduct(id: Long): Product {
         return productRepository.findById(id).orElseThrow() { NoSuchElementException("Product not found") }
     }
+    fun getAllProducts(): List<Product> = productRepository.findAll()
 
 }
