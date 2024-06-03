@@ -59,12 +59,12 @@ class StockServiceTest {
         val product = Product("Test Product")
         val stock = Stock(10, product)
 
-        `when`(stockRepository.findByProductIdAndShopId(1)).thenReturn(stock)
+        `when`(stockRepository.findStockByProductId(1)).thenReturn(stock)
 
         val isStockAvailable = stockService.checkStock(stockRequest)
 
         assertTrue(isStockAvailable)
-        verify(stockRepository).findByProductIdAndShopId(1)
+        verify(stockRepository).findStockByProductId(1)
     }
 
     @Test
@@ -100,22 +100,22 @@ class StockServiceTest {
         val product = Product("Test Product")
         val stock = Stock(10, product)
 
-        `when`(stockRepository.findByProductIdAndWarehouseId(product.id)).thenReturn(10)
+        `when`(stockRepository.findQuantityByProductId(product.id)).thenReturn(10)
 
         val foundStock = stockService.getStockByProductId(product.id)
 
         assertEquals(10, foundStock)
-        verify(stockRepository).findByProductIdAndWarehouseId(product.id)
+        verify(stockRepository).findQuantityByProductId(product.id)
     }
 
     @Test
     fun `test getStockByProductId with non-existing id`() {
-        `when`(stockRepository.findByProductIdAndWarehouseId(anyLong())).thenReturn(0)
+        `when`(stockRepository.findQuantityByProductId(anyLong())).thenReturn(0)
 
         val foundStock = stockService.getStockByProductId(1)
 
         assertEquals(0, foundStock)
-        verify(stockRepository).findByProductIdAndWarehouseId(1)
+        verify(stockRepository).findQuantityByProductId(1)
     }
 
 }

@@ -12,7 +12,7 @@ import java.util.*
 class ProductController(private val productService: ProductService) {
 
     @PostMapping("/add")
-    fun createProduct(@RequestBody product: ProductDTO): ResponseEntity<Product> {
+    fun createProduct(@RequestBody product: ProductDTO): ResponseEntity<ProductDTO> {
         try {
             val createdProduct = productService.createProduct(product)
             return ResponseEntity.ok(createdProduct)
@@ -22,7 +22,7 @@ class ProductController(private val productService: ProductService) {
     }
 
     @GetMapping("/{id}")
-    fun getProduct(@PathVariable id: Long): ResponseEntity<Product> {
+    fun getProduct(@PathVariable id: Long): ResponseEntity<ProductDTO> {
         try {
             val product = productService.getProduct(id)
             return product.let { ResponseEntity.ok().body(it) }
@@ -32,13 +32,13 @@ class ProductController(private val productService: ProductService) {
     }
 
     @GetMapping("/all")
-    fun getAllProducts(): ResponseEntity<List<Product>> {
+    fun getAllProducts(): ResponseEntity<List<ProductDTO>> {
         val products = productService.getAllProducts()
         return ResponseEntity.ok(products)
     }
 
     @PutMapping("/{id}")
-    fun updateProduct(@RequestBody product: ProductDTO): ResponseEntity<Product> {
+    fun updateProduct(@RequestBody product: ProductDTO): ResponseEntity<ProductDTO> {
         try {
             val updatedProduct = productService.updateProduct(product)
             return ResponseEntity.ok(updatedProduct)

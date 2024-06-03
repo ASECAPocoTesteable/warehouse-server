@@ -15,32 +15,36 @@ class ProductService(
 ) {
 
     @Transactional
-    fun createProduct(productDTO: ProductDTO): Product {
+    fun createProduct(productDTO: ProductDTO): ProductDTO {
         if (productDTO.stockQuantity < 0) {
             throw IllegalArgumentException("Product quantity cannot be negative")
         }
 
         val product = Product(name = productDTO.name)
-        val stock = Stock(quantity = productDTO.stockQuantity, product = product)
+        val savedProduct = productRepository.save(product)
 
+        val stock = Stock(quantity = productDTO.stockQuantity, product = savedProduct)
         stockRepository.save(stock)
-        return productRepository.save(product)
+
+        return ProductDTO(savedProduct.id, savedProduct.name, stock.quantity)
     }
 
     @Transactional
-    fun updateProduct(productDTO: ProductDTO): Product {
+    fun updateProduct(productDTO: ProductDTO): ProductDTO {
         if (productDTO.stockQuantity < 0) {
             throw IllegalArgumentException("Product quantity cannot be negative")
         }
 
-        val product = productRepository.findById(productDTO.id).orElseThrow() { NoSuchElementException("Product not found") }
+        val product = productRepository.findById(productDTO.id).orElseThrow { NoSuchElementException("Product not found") }
         product.name = productDTO.name
-        if (product.stock == null) {
-            product.stock = Stock(productDTO.stockQuantity, product)
-        } else {
-            product.stock?.quantity = productDTO.stockQuantity
-        }
-        return productRepository.save(product)
+
+        val stock = stockRepository.findByProductId(product.id).first()
+        stock.quantity = productDTO.stockQuantity
+
+        stockRepository.save(stock)
+        productRepository.save(product)
+
+        return ProductDTO(product.id, product.name, stock.quantity)
     }
 
     @Transactional
@@ -56,10 +60,15 @@ class ProductService(
         }
     }
 
-
-    fun getProduct(id: Long): Product {
-        return productRepository.findById(id).orElseThrow() { NoSuchElementException("Product not found") }
+    fun getProduct(id: Long): ProductDTO {
+        val product = productRepository.findById(id).orElseThrow { NoSuchElementException("Product not found") }
+        return ProductDTO(product.id, product.name, product.stock?.quantity ?: 0)
     }
-    fun getAllProducts(): List<Product> = productRepository.findAll()
+
+    fun getAllProducts(): List<ProductDTO> {
+        return productRepository.findAll().map { product ->
+            ProductDTO(product.id, product.name, product.stock?.quantity ?: 0)
+        }
+    }
 
 }
