@@ -5,17 +5,19 @@ import com.aseca.warehouse.repository.OrderRepository
 import com.aseca.warehouse.repository.ProductRepository
 import com.aseca.warehouse.util.OrderDTO
 import com.aseca.warehouse.util.OrderProductDTO
+import org.junit.Before
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.BDDMockito.given
-import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.junit.jupiter.MockitoSettings
 import org.mockito.quality.Strictness
+import org.springframework.web.reactive.function.client.WebClient
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -29,10 +31,17 @@ class OrderServiceTest {
     private lateinit var productRepository: ProductRepository
 
     @Mock
+    private lateinit var webClient : WebClient
+
+    @Mock
     private lateinit var stockService: StockService
 
-    @InjectMocks
     private lateinit var orderService: OrderService
+
+    @BeforeEach
+    fun setUp() {
+        orderService = OrderService(orderRepository, productRepository, stockService, webClient)
+    }
 
     @Test
     fun `test createOrder`() {

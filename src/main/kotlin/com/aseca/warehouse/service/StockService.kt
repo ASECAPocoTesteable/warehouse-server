@@ -43,7 +43,7 @@ class StockService(@Autowired private val stockRepository: StockRepository) {
     @Transactional(readOnly = true)
     fun checkStock(stockRequest: ProductStockRequestDto): Boolean {
         stockRequest.productList.forEach {
-            val stock = stockRepository.findByProductIdAndShopId(it.productId, )
+            val stock = stockRepository.findStockByProductId(it.productId, )
             if (stock.quantity < it.quantity) {
                 return false
             }
@@ -61,6 +61,6 @@ class StockService(@Autowired private val stockRepository: StockRepository) {
     }
 
     fun getStockByProductId(productId: Long): Int {
-        return stockRepository.findByProductIdAndWarehouseId(productId)
+        return stockRepository.findQuantityByProductId(productId)
     }
 }

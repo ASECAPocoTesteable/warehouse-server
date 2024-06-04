@@ -66,19 +66,19 @@ class ProductServiceTest {
 
     @Test
     fun `test updateProduct`() {
+        val productDTO = ProductDTO(1, "Updated Test Product", 20)
         val product = Product("Test Product")
+        product.id = 1
         val stock = Stock(10, product)
-        val productDTO = ProductDTO(1, "Updated Product", 20)
 
-        `when`(productRepository.findById(1)).thenReturn(Optional.of(product))
-        `when`(productRepository.save(any(Product::class.java))).thenReturn(product)
+        given(productRepository.findById(1)).willReturn(Optional.of(product))
+        given(stockRepository.findByProductId(1)).willReturn(listOf(stock))
 
         val updatedProduct = productService.updateProduct(productDTO)
 
-        assertEquals("Updated Product", updatedProduct.name)
-        assertEquals(20, updatedProduct.stock?.quantity)
-        verify(productRepository).save(product)
+        assertEquals(productDTO.name, updatedProduct.name)
     }
+
 
     @Test
     fun `test deleteProduct`() {

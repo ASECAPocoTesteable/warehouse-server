@@ -25,53 +25,49 @@ class ProductControllerTest {
     @Test
     fun `test createProduct`() {
         val productDTO = ProductDTO(1, "Test Product", 10)
-        val product = Product("Test Product")
-        product.id = 1
 
-        `when`(productService.createProduct(productDTO)).thenReturn(product)
+
+        `when`(productService.createProduct(productDTO)).thenReturn(productDTO)
 
         val createdProduct = productController.createProduct(productDTO)
 
-        assertEquals(ResponseEntity.ok(product), createdProduct)
+        assertEquals(ResponseEntity.ok(productDTO), createdProduct)
         verify(productService).createProduct(productDTO)
     }
 
     @Test
     fun `test getProduct`() {
-        val product = Product("Test Product")
-        product.id = 1
+        val productDTO = ProductDTO(1, "Test Product", 10)
 
-        `when`(productService.getProduct(1)).thenReturn(product)
+        `when`(productService.getProduct(1)).thenReturn(productDTO)
 
         val foundProduct = productController.getProduct(1)
 
-        assertEquals(ResponseEntity.ok(product), foundProduct)
+        assertEquals(ResponseEntity.ok(productDTO), foundProduct)
         verify(productService).getProduct(1)
     }
 
     @Test
     fun `test getAllProducts`() {
-        val products = listOf(Product("Test Product 1"), Product("Test Product 2"))
+        val productsDTO = listOf(ProductDTO(1, "Test Product 1", 10), ProductDTO(2, "Test Product 2", 20))
 
-        `when`(productService.getAllProducts()).thenReturn(products)
+        `when`(productService.getAllProducts()).thenReturn(productsDTO)
 
         val allProducts = productController.getAllProducts()
 
-        assertEquals(ResponseEntity.ok(products), allProducts)
+        assertEquals(ResponseEntity.ok(productsDTO), allProducts)
         verify(productService).getAllProducts()
     }
 
     @Test
     fun `test updateProduct`() {
         val productDTO = ProductDTO(1, "Updated Test Product", 20)
-        val product = Product("Updated Test Product")
-        product.id = 1
 
-        `when`(productService.updateProduct(productDTO)).thenReturn(product)
+        `when`(productService.updateProduct(productDTO)).thenReturn(productDTO)
 
         val updatedProduct = productController.updateProduct(productDTO)
 
-        assertEquals(ResponseEntity.ok(product), updatedProduct)
+        assertEquals(ResponseEntity.ok(productDTO), updatedProduct)
         verify(productService).updateProduct(productDTO)
     }
 
@@ -87,25 +83,25 @@ class ProductControllerTest {
 
     @Test
     fun `test findByName`() {
-        val products = listOf(ProductDTO(1, "Test Product", 10), ProductDTO(2, "Test Product", 20))
+        val productsDTO = listOf(ProductDTO(1, "Test Product", 10), ProductDTO(2, "Test Product", 20))
 
-        `when`(productService.getProductByName("Test Product")).thenReturn(products)
+        `when`(productService.getProductByName("Test Product")).thenReturn(productsDTO)
 
         val foundProducts = productController.findByName("Test Product")
 
-        assertEquals(ResponseEntity.of(Optional.ofNullable(products)), foundProducts)
+        assertEquals(ResponseEntity.of(Optional.ofNullable(productsDTO)), foundProducts)
         verify(productService).getProductByName("Test Product")
     }
 
     @Test
     fun `test findByName with no products found`() {
-        val products = emptyList<ProductDTO>()
+        val productsDTO = emptyList<ProductDTO>()
 
-        `when`(productService.getProductByName("Test Product")).thenReturn(products)
+        `when`(productService.getProductByName("Test Product")).thenReturn(productsDTO)
 
         val foundProducts = productController.findByName("Test Product")
 
-        assertEquals(ResponseEntity.of(Optional.ofNullable(products)), foundProducts)
+        assertEquals(ResponseEntity.of(Optional.ofNullable(productsDTO)), foundProducts)
         verify(productService).getProductByName("Test Product")
     }
 
@@ -117,7 +113,7 @@ class ProductControllerTest {
 
         val response = productController.createProduct(productDTO)
 
-        assertEquals(ResponseEntity.notFound().build<Product>(), response)
+        assertEquals(ResponseEntity.notFound().build<ProductDTO>(), response)
     }
 
     @Test
@@ -126,7 +122,7 @@ class ProductControllerTest {
 
         val response = productController.getProduct(1)
 
-        assertEquals(ResponseEntity.notFound().build<Product>(), response)
+        assertEquals(ResponseEntity.notFound().build<ProductDTO>(), response)
     }
 
     @Test
@@ -137,7 +133,7 @@ class ProductControllerTest {
 
         val response = productController.updateProduct(productDTO)
 
-        assertEquals(ResponseEntity.notFound().build<Product>(), response)
+        assertEquals(ResponseEntity.notFound().build<ProductDTO>(), response)
     }
 
     @Test
