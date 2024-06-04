@@ -13,6 +13,12 @@ RUN gradle build --no-daemon
 
 WORKDIR /app
 
-EXPOSE 8080
+EXPOSE ${PORT}
+
+# Set environment variables for the application
+ENV PORT=${PORT}
+ENV DATABASE_URL=${DATABASE_URL}
+ENV DATABASE_USERNAME=${DATABASE_USERNAME}
+ENV DATABASE_PASSWORD=${DATABASE_PASSWORD}
 
 CMD ["java", "-jar", "/home/gradle/src/build/libs/warehouse-server-0.0.1-SNAPSHOT.jar"]
