@@ -7,6 +7,8 @@ services:
       - "5432:5432"
     env_file:
       - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   app:
     image: warehouseapi
@@ -14,7 +16,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8081:8080"
+      - "8082:8080"
     depends_on:
       - postgres
     env_file:
