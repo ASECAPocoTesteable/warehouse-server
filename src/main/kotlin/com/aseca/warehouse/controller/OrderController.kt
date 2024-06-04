@@ -5,11 +5,18 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import com.aseca.warehouse.util.OrderDTO
+import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/order")
 class OrderController(@Autowired private val orderService: OrderService) {
 
+    @PutMapping("/ready-for-pickup/{id}")
+    fun notifyOrderReady(@PathVariable id: Long): Mono<ResponseEntity<String>> {
+        return orderService.notifyOrderReadyForPickup(id)
+            .map { ResponseEntity.ok(it) }
+            .defaultIfEmpty(ResponseEntity.notFound().build())
+    }
 
     @PostMapping("/create")
     fun createOrder(@RequestBody orderDTO: OrderDTO): ResponseEntity<OrderDTO> {
@@ -48,6 +55,10 @@ class OrderController(@Autowired private val orderService: OrderService) {
         } catch (e: NoSuchElementException) {
             ResponseEntity.notFound().build()
         }
+    }
+    @GetMapping("/all")
+    fun getAllOrders(): ResponseEntity<List<OrderDTO>> {
+        return ResponseEntity.ok(orderService.getAllOrders())
     }
 
     @GetMapping("/orders/status/{id}")
