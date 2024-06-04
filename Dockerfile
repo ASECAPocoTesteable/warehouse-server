@@ -15,4 +15,4 @@ WORKDIR /app
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "/home/gradle/src/build/libs/demo-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "/home/gradle/src/build/libs/warehouse-server-0.0.1-SNAPSHOT.jar"]
