@@ -56,6 +56,10 @@ class OrderController(@Autowired private val orderService: OrderService) {
             ResponseEntity.notFound().build()
         }
     }
+    @GetMapping("/all")
+    fun getAllOrders(): ResponseEntity<List<OrderDTO>> {
+        return ResponseEntity.ok(orderService.getAllOrders())
+    }
 
     @GetMapping("/orders/status/{id}")
     fun getOrderStatus(@PathVariable id: Long): ResponseEntity<String> {
