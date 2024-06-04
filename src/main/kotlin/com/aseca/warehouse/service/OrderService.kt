@@ -96,6 +96,17 @@ class OrderService(
             }
     }
 
+    fun getAllOrders(): List<OrderDTO> {
+        return orderRepository.findAll().map { order ->
+            OrderDTO(
+                order.id,
+                order.status,
+                order.orderProducts.map {
+                    OrderProductDTO(it.product.id, it.quantity)
+                }
+            )
+        }
+    }
 
     private fun verifyStatusChange(orderStatus: STATUS, status: STATUS) {
         when (status) {
