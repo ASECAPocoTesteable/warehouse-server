@@ -7,12 +7,16 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import com.aseca.warehouse.util.OrderDTO
 import com.aseca.warehouse.util.OrderProductDTO
+import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 
 @Service
 class OrderService(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
-    private val stockService: StockService
+    private val stockService: StockService,
+    private val webClient: WebClient,
 ) {
 
     @Transactional
@@ -51,7 +55,7 @@ class OrderService(
 
     @Transactional
     fun updateOrder(orderDTO: OrderDTO): OrderDTO {
-        val order = orderRepository.findById(orderDTO.id, ).orElseThrow { NoSuchElementException("Order not found") }
+        val order = orderRepository.findById(orderDTO.id).orElseThrow { NoSuchElementException("Order not found") }
         order.status = orderDTO.status
         order.orderProducts = orderDTO.orderProducts.map { createOrderProduct(it, order) }
         return OrderDTO(
@@ -61,6 +65,69 @@ class OrderService(
                 OrderProductDTO(it.product.id, it.quantity)
             }
         )
+    }
+
+    fun notifyOrderReadyForPickup(id: Long): Mono<String> {
+        return Mono.fromCallable { orderRepository.findById(id) }
+            .subscribeOn(Schedulers.boundedElastic())
+            .flatMap { optionalOrder ->
+                optionalOrder.map { order ->
+                    verifyStatusChange(order.status, STATUS.READY_FOR_PICKUP)
+                    order.status = STATUS.READY_FOR_PICKUP
+                    Mono.fromCallable { orderRepository.save(order) }
+                        .subscribeOn(Schedulers.boundedElastic())
+                        .flatMap { savedOrder ->
+                            sendNotificationToControlTower(savedOrder)
+                                .doOnError(Throwable::printStackTrace)
+                                .flatMap { success ->
+                                    if (success == "true") {
+                                        Mono.just("Order status updated")
+                                    } else {
+                                        Mono.error(Exception("Failed to notify status update"))
+                                    }
+                                }
+                        }
+                }.orElseGet {
+                    Mono.error(NoSuchElementException("Order not found"))
+                }
+            }
+            .onErrorResume { throwable ->
+                Mono.error(Exception("Failed to update order due to: ${throwable.message}", throwable))
+            }
+    }
+
+
+    private fun verifyStatusChange(orderStatus: STATUS, status: STATUS) {
+        when (status) {
+            STATUS.READY_FOR_PICKUP -> {
+                if (orderStatus == STATUS.PICKED_UP || orderStatus == STATUS.READY_FOR_PICKUP) {
+                    throw Exception("Cannot change from status $orderStatus to $status")
+                }
+            }
+
+            STATUS.PICKED_UP -> {
+                if (orderStatus != STATUS.READY_FOR_PICKUP) {
+                    throw Exception("Cannot change from status $orderStatus to $status")
+                }
+            }
+
+            else -> {
+                throw Exception("Invalid status")
+            }
+
+        }
+    }
+
+    private fun sendNotificationToControlTower(order: Order): Mono<String> {
+        val url = "http://controltowerpt:8080/warehouse/order/ready?orderId=${order.id}"
+
+        return webClient.put()
+            .uri(url)
+            .retrieve()
+            .bodyToMono(String::class.java)
+            .onErrorResume { throwable ->
+                Mono.error(Exception("Failed to notify status update: ${throwable.message}", throwable))
+            }
     }
 
     @Transactional
