@@ -3,6 +3,7 @@ package com.aseca.warehouse.controller
 import com.aseca.warehouse.model.Product
 import com.aseca.warehouse.service.ProductService
 import com.aseca.warehouse.util.ProductDTO
+import com.aseca.warehouse.util.UpdateProductDTO
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
@@ -62,13 +63,14 @@ class ProductControllerTest {
     @Test
     fun `test updateProduct`() {
         val productDTO = ProductDTO(1, "Updated Test Product", 20)
+        val updateInfoDTO = UpdateProductDTO(1, 10)
 
-        `when`(productService.updateProduct(productDTO)).thenReturn(productDTO)
+        `when`(productService.updateProduct(updateInfoDTO)).thenReturn(productDTO)
 
-        val updatedProduct = productController.updateProduct(productDTO)
+        val updatedProduct = productController.updateProduct(updateInfoDTO)
 
         assertEquals(ResponseEntity.ok(productDTO), updatedProduct)
-        verify(productService).updateProduct(productDTO)
+        verify(productService).updateProduct(updateInfoDTO)
     }
 
     @Test
@@ -128,10 +130,11 @@ class ProductControllerTest {
     @Test
     fun `test updateProduct with exception`() {
         val productDTO = ProductDTO(1, "Updated Test Product", 20)
+        val updateInfoDTO = UpdateProductDTO(1, 10)
 
-        `when`(productService.updateProduct(productDTO)).thenThrow(RuntimeException::class.java)
+        `when`(productService.updateProduct(updateInfoDTO)).thenThrow(RuntimeException::class.java)
 
-        val response = productController.updateProduct(productDTO)
+        val response = productController.updateProduct(updateInfoDTO)
 
         assertEquals(ResponseEntity.notFound().build<ProductDTO>(), response)
     }

@@ -19,6 +19,11 @@ data class ProductDTO(
     val stockQuantity: Int
 )
 
+data class UpdateProductDTO(
+    val id: Long,
+    val addedQuantity: Int
+)
+
 data class StockDTO(
     val productId: Long,
     val quantity: Int

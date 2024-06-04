@@ -7,6 +7,7 @@ import com.aseca.warehouse.repository.StockRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import com.aseca.warehouse.util.ProductDTO
+import com.aseca.warehouse.util.UpdateProductDTO
 
 @Service
 class ProductService(
@@ -30,16 +31,14 @@ class ProductService(
     }
 
     @Transactional
-    fun updateProduct(productDTO: ProductDTO): ProductDTO {
-        if (productDTO.stockQuantity < 0) {
+    fun updateProduct(updateProductDTO: UpdateProductDTO): ProductDTO {
+        if (updateProductDTO.addedQuantity < 0) {
             throw IllegalArgumentException("Product quantity cannot be negative")
         }
 
-        val product = productRepository.findById(productDTO.id).orElseThrow { NoSuchElementException("Product not found") }
-        product.name = productDTO.name
-
+        val product = productRepository.findById(updateProductDTO.id).orElseThrow { NoSuchElementException("Product not found") }
         val stock = stockRepository.findByProductId(product.id).first()
-        stock.quantity = productDTO.stockQuantity
+        stock.quantity += updateProductDTO.addedQuantity
 
         stockRepository.save(stock)
         productRepository.save(product)

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import com.aseca.warehouse.service.ProductService
 import com.aseca.warehouse.util.ProductDTO
+import com.aseca.warehouse.util.UpdateProductDTO
 import java.util.*
 
 @RestController
@@ -38,7 +39,7 @@ class ProductController(private val productService: ProductService) {
     }
 
     @PutMapping("/{id}")
-    fun updateProduct(@RequestBody product: ProductDTO): ResponseEntity<ProductDTO> {
+    fun updateProduct(@RequestBody product: UpdateProductDTO): ResponseEntity<ProductDTO> {
         try {
             val updatedProduct = productService.updateProduct(product)
             return ResponseEntity.ok(updatedProduct)

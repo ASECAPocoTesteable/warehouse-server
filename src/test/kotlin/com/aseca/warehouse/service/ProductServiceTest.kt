@@ -5,6 +5,7 @@ import com.aseca.warehouse.model.Stock
 import com.aseca.warehouse.repository.ProductRepository
 import com.aseca.warehouse.repository.StockRepository
 import com.aseca.warehouse.util.ProductDTO
+import com.aseca.warehouse.util.UpdateProductDTO
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -67,6 +68,7 @@ class ProductServiceTest {
     @Test
     fun `test updateProduct`() {
         val productDTO = ProductDTO(1, "Updated Test Product", 20)
+        val updateProductDTO = UpdateProductDTO(1, 10)
         val product = Product("Test Product")
         product.id = 1
         val stock = Stock(10, product)
@@ -74,9 +76,9 @@ class ProductServiceTest {
         given(productRepository.findById(1)).willReturn(Optional.of(product))
         given(stockRepository.findByProductId(1)).willReturn(listOf(stock))
 
-        val updatedProduct = productService.updateProduct(productDTO)
+        val updatedProduct = productService.updateProduct(updateProductDTO)
 
-        assertEquals(productDTO.name, updatedProduct.name)
+        assertEquals(productDTO.stockQuantity, updatedProduct.stockQuantity)
     }
 
 
