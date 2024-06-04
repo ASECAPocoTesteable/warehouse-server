@@ -1,7 +1,6 @@
 package com.aseca.warehouse.controller
 
 import com.aseca.warehouse.service.OrderService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import com.aseca.warehouse.util.OrderDTO
@@ -9,7 +8,7 @@ import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/order")
-class OrderController(@Autowired private val orderService: OrderService) {
+class OrderController(private val orderService: OrderService) {
 
     @PutMapping("/ready-for-pickup/{id}")
     fun notifyOrderReady(@PathVariable id: Long): Mono<ResponseEntity<String>> {
