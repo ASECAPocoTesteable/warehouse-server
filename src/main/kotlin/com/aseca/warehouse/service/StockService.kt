@@ -2,6 +2,7 @@ package com.aseca.warehouse.service
 
 import com.aseca.warehouse.model.Stock
 import com.aseca.warehouse.repository.StockRepository
+import com.aseca.warehouse.util.ProductStock
 import com.aseca.warehouse.util.ProductStockRequestDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -43,7 +44,7 @@ class StockService(@Autowired private val stockRepository: StockRepository) {
     @Transactional(readOnly = true)
     fun checkStock(stockRequest: ProductStockRequestDto): Boolean {
         stockRequest.productList.forEach {
-            val stock = stockRepository.findStockByProductId(it.productId, )
+            val stock = stockRepository.findStockByProductId(it.productId)
             if (stock.quantity < it.quantity) {
                 return false
             }

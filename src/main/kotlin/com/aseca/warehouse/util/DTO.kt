@@ -1,7 +1,8 @@
 package com.aseca.warehouse.util
 
 import com.aseca.warehouse.model.STATUS
-
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 data class OrderDTO(
     val id : Long,
     val status: STATUS,
@@ -37,11 +38,17 @@ data class AddressDTO(
     val zipcode: String,
     val number: Int
 )
-data class ProductStockRequestDto(
-    val productList: List<ProductStock>,
+
+data class ProductStockRequestDto @JsonCreator constructor(
+    @JsonProperty("productList") val productList: List<ProductStock>
 )
 
-data class ProductStock(
+data class ProductStock @JsonCreator constructor(
+    @JsonProperty("productId") val productId: Long,
+    @JsonProperty("quantity") val quantity: Int
+)
+
+data class ProductQuantity(
     val productId: Long,
-    val quantity: Int,
+    val quantity: Int
 )

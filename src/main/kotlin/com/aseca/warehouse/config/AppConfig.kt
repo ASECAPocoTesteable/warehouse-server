@@ -1,5 +1,6 @@
 package com.aseca.warehouse.config
 
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.client.WebClient
@@ -24,5 +25,10 @@ class AppConfig {
                     .allowCredentials(true)
             }
         }
+    }
+
+    @Bean
+    fun kotlinModule(): KotlinModule {
+        return KotlinModule.Builder().build()
     }
 }
