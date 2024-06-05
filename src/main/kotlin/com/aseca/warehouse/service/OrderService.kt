@@ -52,9 +52,9 @@ class OrderService(
 
     @Transactional
     fun updateOrderStatus(id: Long, status: STATUS): Order {
-        val orderr = orderRepository.findById(id).orElseThrow { NoSuchElementException("Order not found") }
-        orderr.status = status
-        return orderRepository.save(orderr)
+        val order = orderRepository.findById(id).orElseThrow { NoSuchElementException("Order not found") }
+        order.status = status
+        return orderRepository.save(order)
     }
 
     @Transactional
