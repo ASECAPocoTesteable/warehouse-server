@@ -82,7 +82,10 @@ class OrderService(
                         .subscribeOn(Schedulers.boundedElastic())
                         .flatMap { savedOrder ->
                             sendNotificationToControlTower(savedOrder)
-                                .doOnError(Throwable::printStackTrace)
+                                .doOnError { e ->
+                                    e.printStackTrace()
+                                    println("Error notifying control tower: ${e.message}")
+                                }
                                 .flatMap { success ->
                                     if (success == "true") {
                                         Mono.just("Order status updated")
@@ -96,9 +99,11 @@ class OrderService(
                 }
             }
             .onErrorResume { throwable ->
-                Mono.error(Exception("Failed to update order due to: ${throwable.message}", throwable))
+                println("Error updating order: ${throwable.message}")
+                Mono.error(throwable)
             }
     }
+
 
 
     fun getAllOrders(): List<OrderDTO> {
@@ -130,9 +135,9 @@ class OrderService(
             else -> {
                 throw Exception("Invalid status")
             }
-
         }
     }
+
 
     private fun sendNotificationToControlTower(order: Order): Mono<String> {
         val url = "http://controltowerpt:8080/warehouse/order/ready/${order.id}"
