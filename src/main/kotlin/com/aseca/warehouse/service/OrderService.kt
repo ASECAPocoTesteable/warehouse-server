@@ -61,13 +61,12 @@ class OrderService(
     fun updateOrder(orderDTO: OrderDTO): OrderDTO {
         val order = orderRepository.findById(orderDTO.id).orElseThrow { NoSuchElementException("Order not found") }
         order.status = orderDTO.status
-        order.orderProducts = orderDTO.orderProducts.map { createOrderProduct(it, order) }.toMutableList()
-        val savedOrder = orderRepository.save(order)
+        order.orderProducts = orderDTO.orderProducts.map { createOrderProduct(it, order) }
         return OrderDTO(
-            savedOrder.id,
-            savedOrder.status,
-            savedOrder.orderProducts.map {
-                OrderProductDTO(it.product.id, it.quantity)
+            order.id,
+            order.status,
+            order.orderProducts.map {
+                OrderProductDTO(it.product.idProduct, it.quantity)
             }
         )
     }
