@@ -29,7 +29,7 @@ class StockService(@Autowired private val stockRepository: StockRepository) {
             throw IllegalArgumentException("Stock quantity cannot be negative")
         }
 
-        val existingStocks = stockRepository.findByProductId(stock.product.id)
+        val existingStocks = stockRepository.findByProductId(stock.product.idProduct)
         if (existingStocks.isNotEmpty()) {
             throw IllegalArgumentException("Stock already exists")
         }

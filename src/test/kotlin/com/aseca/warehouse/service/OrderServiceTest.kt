@@ -55,7 +55,7 @@ class OrderServiceTest {
             productList = listOf(ProductStock(productId = 1, quantity = 10))
         )
         val order = Order(status = STATUS.PENDING)
-        val product = Product(name = "Test Product")
+        val product = Product(name = "Test Product", idProduct = 1)
 
         given(productRepository.findById(anyLong())).willReturn(Optional.of(product))
         given(orderRepository.save(order)).willReturn(order)
@@ -68,7 +68,7 @@ class OrderServiceTest {
     @Test
     fun `test createOrderCheck`() {
         val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(1, 10)))
-        val product = Product("Test Product")
+        val product = Product("Test Product", idProduct = 1)
 
         given(productRepository.findById(anyLong())).willReturn(Optional.of(product))
 
@@ -136,8 +136,8 @@ class OrderServiceTest {
     fun `test updateOrder`() {
         val order = Order(STATUS.PENDING)
         order.id = 1
-        val product = Product("Test Product")
-        product.id = 1
+        val product = Product("Test Product", idProduct = 1)
+        product.idProduct = 1
         val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(1, 10)))
 
         given(orderRepository.findById(1)).willReturn(Optional.of(order))
@@ -157,12 +157,12 @@ class OrderServiceTest {
     fun `test updateOrder with new product`() {
         val order = Order(STATUS.PENDING)
         order.id = 1
-        val initialProduct = Product("Initial Product")
-        initialProduct.id = 1
+        val initialProduct = Product("Initial Product", idProduct = 1)
+        initialProduct.idProduct = 1
         order.orderProducts = mutableListOf(OrderProduct(initialProduct, order, 5))
 
-        val newProduct = Product("New Product")
-        newProduct.id = 2
+        val newProduct = Product("New Product", idProduct = 1)
+        newProduct.idProduct = 2
         val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(2, 10)))
 
         given(orderRepository.findById(1)).willReturn(Optional.of(order))
