@@ -46,7 +46,7 @@ class ProductServiceTest {
 
     @Test
     fun `test getProductById`() {
-        val product = Product("Test Product")
+        val product = Product("Test Product", id = 1)
         product.id = 1
 
         given(productRepository.findById(anyLong())).willReturn(Optional.of(product))
@@ -69,7 +69,7 @@ class ProductServiceTest {
     fun `test updateProduct`() {
         val productDTO = ProductDTO(1, "Updated Test Product", 20)
         val updateProductDTO = UpdateProductDTO(1, 10)
-        val product = Product("Test Product")
+        val product = Product("Test Product", id = 1)
         product.id = 1
         val stock = Stock(10, product)
 
@@ -84,7 +84,7 @@ class ProductServiceTest {
 
     @Test
     fun `test deleteProduct`() {
-        val product = Product("Test Product")
+        val product = Product("Test Product", id = 1)
         product.id = 1
 
         productService.deleteProduct(1)
@@ -94,8 +94,8 @@ class ProductServiceTest {
 
     @Test
     fun `test getAllProducts`() {
-        val product1 = Product("Test Product 1")
-        val product2 = Product("Test Product 2")
+        val product1 = Product("Test Product 1", id = 1)
+        val product2 = Product("Test Product 2", id = 2)
 
         given(productRepository.findAll()).willReturn(listOf(product1, product2))
 
@@ -106,7 +106,7 @@ class ProductServiceTest {
 
     @Test
     fun `test getProductByName`() {
-        val product = Product("Test Product")
+        val product = Product("Test Product", id = 1)
         product.id = 1
 
         given(productRepository.findByName("Test Product")).willReturn(listOf(product))
@@ -119,7 +119,7 @@ class ProductServiceTest {
 
     @Test
     fun `test getProduct`() {
-        val product = Product("Test Product")
+        val product = Product("Test Product", id = 1)
         product.id = 1
 
         given(productRepository.findById(1)).willReturn(Optional.of(product))

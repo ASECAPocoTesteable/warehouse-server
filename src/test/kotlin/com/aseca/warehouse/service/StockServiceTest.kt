@@ -26,7 +26,7 @@ class StockServiceTest {
 
     @Test
     fun `test updateStock`() {
-        val product = Product("Test Product")
+        val product = Product("Test Product", id = 1)
         val stock = Stock(10, product)
         val stockDTO = StockDTO(1, 20)
 
@@ -42,7 +42,7 @@ class StockServiceTest {
 
     @Test
     fun `test getStockById`() {
-        val product = Product("Test Product")
+        val product = Product("Test Product", id = 1)
         val stock = Stock(10, product)
 
         `when`(stockRepository.findById(1)).thenReturn(Optional.of(stock))
@@ -56,7 +56,7 @@ class StockServiceTest {
     @Test
     fun `test checkStock`() {
         val stockRequest = ProductStockRequestDto(listOf(ProductStock(1, 5)))
-        val product = Product("Test Product")
+        val product = Product("Test Product", id = 1)
         val stock = Stock(10, product)
 
         `when`(stockRepository.findStockByProductId(1)).thenReturn(stock)
@@ -69,7 +69,7 @@ class StockServiceTest {
 
     @Test
     fun `test reduceProductStock`() {
-        val product = Product("Test Product")
+        val product = Product("Test Product", id = 1)
         val stock = Stock(10, product)
 
         `when`(stockRepository.findByProductId(product.id)).thenReturn(listOf(stock))
@@ -83,7 +83,7 @@ class StockServiceTest {
 
     @Test
     fun `test createStock`() {
-        val product = Product("New product")
+        val product = Product("New product", id = 1)
         val stock = Stock(10, product)
 
         `when`(stockRepository.findByProductId(product.id)).thenReturn(emptyList())
@@ -97,7 +97,7 @@ class StockServiceTest {
 
     @Test
     fun `test getStockByProductId`() {
-        val product = Product("Test Product")
+        val product = Product("Test Product", id = 1)
         val stock = Stock(10, product)
 
         `when`(stockRepository.findQuantityByProductId(product.id)).thenReturn(10)

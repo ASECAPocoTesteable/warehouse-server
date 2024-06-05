@@ -47,7 +47,7 @@ class OrderServiceTest {
     fun `test createOrder`() {
         val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(1, 10)))
         val order = Order(STATUS.PENDING)
-        val product = Product("Test Product")
+        val product = Product("Test Product", id = 1)
 
         given(productRepository.findById(anyLong())).willReturn(Optional.of(product))
         given(orderRepository.save(order)).willReturn(order)
@@ -60,7 +60,7 @@ class OrderServiceTest {
     @Test
     fun `test createOrderCheck`() {
         val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(1, 10)))
-        val product = Product("Test Product")
+        val product = Product("Test Product", id = 1)
 
         given(productRepository.findById(anyLong())).willReturn(Optional.of(product))
 
@@ -128,7 +128,7 @@ class OrderServiceTest {
     fun `test updateOrder`() {
         val order = Order(STATUS.PENDING)
         order.id = 1
-        val product = Product("Test Product")
+        val product = Product("Test Product", id = 1)
         product.id = 1
         val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(1, 10)))
 
@@ -149,11 +149,11 @@ class OrderServiceTest {
     fun `test updateOrder with new product`() {
         val order = Order(STATUS.PENDING)
         order.id = 1
-        val initialProduct = Product("Initial Product")
+        val initialProduct = Product("Initial Product", id = 1)
         initialProduct.id = 1
         order.orderProducts = mutableListOf(OrderProduct(initialProduct, order, 5))
 
-        val newProduct = Product("New Product")
+        val newProduct = Product("New Product", id = 1)
         newProduct.id = 2
         val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(2, 10)))
 

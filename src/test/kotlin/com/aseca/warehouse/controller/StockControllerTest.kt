@@ -29,7 +29,7 @@ class StockControllerTest {
     @Test
     fun `test updateStock`() {
         val stockDTO = StockDTO(1, 10)
-        val stock = Stock(10, Product("Test Product"))
+        val stock = Stock(10, Product("Test Product",id= 1))
         stock.id = 1
 
         `when`(stockService.updateStock(1, stockDTO)).thenReturn(stock)
@@ -42,7 +42,7 @@ class StockControllerTest {
 
     @Test
     fun `test getStockById`() {
-        val stock = Stock(10, Product("Test Product"))
+        val stock = Stock(10, Product("Test Product", id=1))
         stock.id = 1
 
         `when`(stockService.getStockById(1)).thenReturn(stock)

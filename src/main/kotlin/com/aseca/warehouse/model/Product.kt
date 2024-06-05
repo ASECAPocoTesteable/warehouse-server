@@ -15,5 +15,5 @@ data class Product(
     var stock: Stock? = null,
 
     @Id
-    var id: Long = 0
+    var id: Long
 )
