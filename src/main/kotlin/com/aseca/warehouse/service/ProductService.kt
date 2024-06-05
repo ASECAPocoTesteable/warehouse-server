@@ -21,10 +21,12 @@ class ProductService(
             throw IllegalArgumentException("Product quantity cannot be negative")
         }
 
-        val product = Product(name = productDTO.name)
-        val savedProduct = productRepository.save(product)
+        val product = Product(name = productDTO.name, id = productDTO.id)
+        val stock = Stock(quantity = productDTO.stockQuantity, product = product)
 
-        val stock = Stock(quantity = productDTO.stockQuantity, product = savedProduct)
+        product.stock = stock // Associate the Stock object with the Product object
+
+        val savedProduct = productRepository.save(product)
         stockRepository.save(stock)
 
         return ProductDTO(savedProduct.id, savedProduct.name, stock.quantity)

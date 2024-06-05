@@ -13,8 +13,7 @@ data class Product(
     @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     @JoinColumn(name = "stock_id", referencedColumnName = "id")
     var stock: Stock? = null,
-){
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
-}
+)
