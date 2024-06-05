@@ -27,7 +27,7 @@ data class UpdateProductDTO(
 
 data class StockDTO(
     val productId: Long,
-    val quantity: Int
+    var quantity: Int
 )
 
 data class AddressDTO(

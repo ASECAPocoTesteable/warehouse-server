@@ -36,7 +36,7 @@ class StockControllerTest {
 
         val updatedStock = stockController.updateStock(1, stockDTO)
 
-        assertEquals(ResponseEntity.ok(stock), updatedStock)
+        assertEquals(ResponseEntity.ok(stockDTO), updatedStock)
         verify(stockService).updateStock(1, stockDTO)
     }
 
@@ -49,7 +49,7 @@ class StockControllerTest {
 
         val foundStock = stockController.getStockById(1)
 
-        assertEquals(ResponseEntity.ok(stock), foundStock)
+        assertEquals(ResponseEntity.ok(StockDTO(1, 10)), foundStock)
         verify(stockService).getStockById(1)
     }
 

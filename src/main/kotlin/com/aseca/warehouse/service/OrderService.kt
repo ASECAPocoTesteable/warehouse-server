@@ -100,6 +100,7 @@ class OrderService(
             }
     }
 
+
     fun getAllOrders(): List<OrderDTO> {
         return orderRepository.findAll().map { order ->
             OrderDTO(
@@ -134,7 +135,7 @@ class OrderService(
     }
 
     private fun sendNotificationToControlTower(order: Order): Mono<String> {
-        val url = "http://controltowerpt:8080/warehouse/order/ready?orderId=${order.id}"
+        val url = "http://controltowerpt:8080/warehouse/order/ready/${order.id}"
 
         return webClient.put()
             .uri(url)

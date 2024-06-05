@@ -14,18 +14,21 @@ import com.aseca.warehouse.util.ProductStockRequestDto
 class StockController(@Autowired private val stockService: StockService) {
 
     @PutMapping("/{id}")
-    fun updateStock(@PathVariable id: Long, @RequestBody stockDTO: StockDTO): ResponseEntity<Stock> {
+    fun updateStock(@PathVariable id: Long, @RequestBody stockDTO: StockDTO): ResponseEntity<StockDTO> {
         return try {
-            ResponseEntity.ok(stockService.updateStock(id, stockDTO))
+            val newStock = stockService.updateStock(id, stockDTO)
+            stockDTO.quantity = newStock.quantity
+            ResponseEntity.ok(stockDTO)
         } catch (e: NoSuchElementException) {
             ResponseEntity.notFound().build()
         }
     }
 
     @GetMapping("/{id}")
-    fun getStockById(@PathVariable id: Long): ResponseEntity<Stock> {
+    fun getStockById(@PathVariable id: Long): ResponseEntity<StockDTO> {
         return try {
-            ResponseEntity.ok(stockService.getStockById(id))
+            val stock = stockService.getStockById(id)
+            ResponseEntity.ok(StockDTO(stock.id, stock.quantity))
         } catch (e: NoSuchElementException) {
             ResponseEntity.notFound().build()
         }
