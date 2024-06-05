@@ -177,4 +177,14 @@ class OrderService(
         stockService.reduceProductStock(product.idProduct, orderProductDTO.quantity)
         return OrderProduct(order = order, product = product, quantity = orderProductDTO.quantity)
     }
+
+    @Transactional
+    fun notifyOrderPickedUp(id: Long){
+        val order = orderRepository.findById(id).orElseThrow { NoSuchElementException("Order not found") }
+        if (order.status != STATUS.READY_FOR_PICKUP) {
+            throw IllegalArgumentException("Order is not ready for pickup")
+        }
+        order.status = STATUS.PICKED_UP
+        orderRepository.save(order)
+    }
 }
