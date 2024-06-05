@@ -28,7 +28,7 @@ class OrderService(
             savedOrder.id,
             savedOrder.status,
             savedOrder.orderProducts.map {
-                OrderProductDTO(it.product.id, it.quantity)
+                OrderProductDTO(it.product.idProduct, it.quantity)
             }
         )
     }
@@ -62,7 +62,7 @@ class OrderService(
             order.id,
             order.status,
             order.orderProducts.map {
-                OrderProductDTO(it.product.id, it.quantity)
+                OrderProductDTO(it.product.idProduct, it.quantity)
             }
         )
     }
@@ -102,7 +102,7 @@ class OrderService(
                 order.id,
                 order.status,
                 order.orderProducts.map {
-                    OrderProductDTO(it.product.id, it.quantity)
+                    OrderProductDTO(it.product.idProduct, it.quantity)
                 }
             )
         }
@@ -151,7 +151,7 @@ class OrderService(
             order.id,
             order.status,
             order.orderProducts.map {
-                OrderProductDTO(it.product.id, it.quantity)
+                OrderProductDTO(it.product.idProduct, it.quantity)
             }
         )
     }
@@ -164,7 +164,7 @@ class OrderService(
     private fun createOrderProduct(orderProductDTO: OrderProductDTO, order: Order): OrderProduct {
         val product = productRepository.findById(orderProductDTO.productId)
             .orElseThrow() { NoSuchElementException("Product not found") }
-        stockService.reduceProductStock(product.id, orderProductDTO.quantity)
+        stockService.reduceProductStock(product.idProduct, orderProductDTO.quantity)
         return OrderProduct(order = order, product = product, quantity = orderProductDTO.quantity)
     }
 }

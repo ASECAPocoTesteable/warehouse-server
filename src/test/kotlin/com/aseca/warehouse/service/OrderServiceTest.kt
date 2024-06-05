@@ -5,7 +5,6 @@ import com.aseca.warehouse.repository.OrderRepository
 import com.aseca.warehouse.repository.ProductRepository
 import com.aseca.warehouse.util.OrderDTO
 import com.aseca.warehouse.util.OrderProductDTO
-import org.junit.Before
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -47,7 +46,7 @@ class OrderServiceTest {
     fun `test createOrder`() {
         val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(1, 10)))
         val order = Order(STATUS.PENDING)
-        val product = Product("Test Product", id = 1)
+        val product = Product("Test Product", idProduct = 1)
 
         given(productRepository.findById(anyLong())).willReturn(Optional.of(product))
         given(orderRepository.save(order)).willReturn(order)
@@ -60,7 +59,7 @@ class OrderServiceTest {
     @Test
     fun `test createOrderCheck`() {
         val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(1, 10)))
-        val product = Product("Test Product", id = 1)
+        val product = Product("Test Product", idProduct = 1)
 
         given(productRepository.findById(anyLong())).willReturn(Optional.of(product))
 
@@ -128,8 +127,8 @@ class OrderServiceTest {
     fun `test updateOrder`() {
         val order = Order(STATUS.PENDING)
         order.id = 1
-        val product = Product("Test Product", id = 1)
-        product.id = 1
+        val product = Product("Test Product", idProduct = 1)
+        product.idProduct = 1
         val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(1, 10)))
 
         given(orderRepository.findById(1)).willReturn(Optional.of(order))
@@ -149,12 +148,12 @@ class OrderServiceTest {
     fun `test updateOrder with new product`() {
         val order = Order(STATUS.PENDING)
         order.id = 1
-        val initialProduct = Product("Initial Product", id = 1)
-        initialProduct.id = 1
+        val initialProduct = Product("Initial Product", idProduct = 1)
+        initialProduct.idProduct = 1
         order.orderProducts = mutableListOf(OrderProduct(initialProduct, order, 5))
 
-        val newProduct = Product("New Product", id = 1)
-        newProduct.id = 2
+        val newProduct = Product("New Product", idProduct = 1)
+        newProduct.idProduct = 2
         val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(2, 10)))
 
         given(orderRepository.findById(1)).willReturn(Optional.of(order))
