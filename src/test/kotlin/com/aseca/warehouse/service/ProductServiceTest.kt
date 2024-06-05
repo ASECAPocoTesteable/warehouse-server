@@ -30,56 +30,56 @@ class ProductServiceTest {
     @InjectMocks
     private lateinit var productService: ProductService
 
-//    @Test
-//    fun `test createProduct`() {
-//        val productDTO = ProductDTO(1, "Test Product", 10)
-//        val product = Product("Test Product")
-//        val stock = Stock(10, product)
-//
-//        given(productRepository.save(product)).willReturn(product)
-//        given(stockRepository.save(stock)).willReturn(stock)
-//
-//        val createdProduct = productService.createProduct(productDTO)
-//
-//        assertEquals(productDTO.name, createdProduct.name)
-//    }
 
-//    @Test
-//    fun `test getProductById`() {
-//        val product = Product("Test Product", idProduct = 1)
-//        product.idProduct = 1
-//
-//        given(productRepository.findById(anyLong())).willReturn(Optional.of(product))
-//
-//        val foundProduct = productService.getProductById(1)
-//
-//        assertEquals(product.name, foundProduct.name)
-//    }
+    @Test
+    fun `test createProduct`() {
+        val productDTO = ProductDTO(1, "Test Product", 10)
+        val product = Product("Test Product", idProduct = 1)
+        val stock = Stock(10, product)
 
-//    @Test
-//    fun `test getProductById with non-existing id`() {
-//        given(productRepository.findById(anyLong())).willReturn(Optional.empty())
-//
-//        assertThrows(NoSuchElementException::class.java) {
-//            productService.getProductById(1)
-//        }
-//    }
+        given(productRepository.save(any(Product::class.java))).willReturn(product)
+        given(stockRepository.save(any(Stock::class.java))).willReturn(stock)
 
-//    @Test
-//    fun `test updateProduct`() {
-//        val productDTO = ProductDTO(1, "Updated Test Product", 20)
-//        val updateProductDTO = UpdateProductDTO(1, 10)
-//        val product = Product("Test Product", idProduct = 1)
-//        product.idProduct = 1
-//        val stock = Stock(10, product)
-//
-//        given(productRepository.findById(1)).willReturn(Optional.of(product))
-//        given(stockRepository.findByProductId(1)).willReturn(listOf(stock))
-//
-//        val updatedProduct = productService.updateProduct(updateProductDTO)
-//
-//        assertEquals(productDTO.stockQuantity, updatedProduct.stockQuantity)
-//    }
+        val createdProduct = productService.createProduct(productDTO)
+
+        assertEquals(productDTO.name, createdProduct.name)
+        assertEquals(productDTO.stockQuantity, createdProduct.stockQuantity)
+    }
+
+    @Test
+    fun `test getProductById`() {
+        val product = Product("Test Product", idProduct = 1)
+        given(productRepository.findByProductId(1L)).willReturn(Optional.of(product))
+
+        val foundProduct = productService.getProductById(1)
+
+        assertEquals(product.name, foundProduct.name)
+    }
+
+    @Test
+    fun `test getProductById with non-existing id`() {
+        given(productRepository.findByProductId(1L)).willReturn(Optional.empty())
+
+        assertThrows(NoSuchElementException::class.java) {
+            productService.getProductById(1)
+        }
+    }
+
+    @Test
+    fun `test updateProduct`() {
+        val updateProductDTO = UpdateProductDTO(1, 10)
+        val product = Product("Test Product", idProduct = 1)
+        val stock = Stock(10, product)
+
+        given(productRepository.findById(1L)).willReturn(Optional.of(product))
+        given(stockRepository.findByProductId(1)).willReturn(listOf(stock))
+        given(stockRepository.save(any(Stock::class.java))).willReturn(stock)
+
+        val updatedProduct = productService.updateProduct(updateProductDTO)
+
+        assertEquals(updateProductDTO.addedQuantity + 10, updatedProduct.stockQuantity)
+        assertEquals(product.name, updatedProduct.name)
+    }
 
 
     @Test
@@ -117,15 +117,15 @@ class ProductServiceTest {
         assertEquals(1, foundProducts[0].id)
     }
 
-//    @Test
-//    fun `test getProduct`() {
-//        val product = Product("Test Product", idProduct = 1)
-//        product.idProduct = 1
-//
-//        given(productRepository.findById(1)).willReturn(Optional.of(product))
-//
-//        val foundProduct = productService.getProduct(1)
-//
-//        assertEquals(1, foundProduct.id)
-//    }
+    @Test
+    fun `test getProduct`() {
+        val product = Product("Test Product", idProduct = 1)
+        product.idProduct = 1
+
+        given(productRepository.findByProductId(1)).willReturn(Optional.of(product))
+
+        val foundProduct = productService.getProduct(1)
+
+        assertEquals(1, foundProduct.id)
+    }
 }

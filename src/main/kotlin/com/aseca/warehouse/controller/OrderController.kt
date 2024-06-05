@@ -4,6 +4,8 @@ import com.aseca.warehouse.service.OrderService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import com.aseca.warehouse.util.OrderDTO
+import com.aseca.warehouse.util.ProductStockRequestDto
+import org.springframework.http.HttpStatus
 import reactor.core.publisher.Mono
 
 @RestController
@@ -18,15 +20,17 @@ class OrderController(private val orderService: OrderService) {
     }
 
     @PostMapping("/create")
-    fun createOrder(@RequestBody orderDTO: OrderDTO): ResponseEntity<OrderDTO> {
+    fun createOrder(@RequestBody productStockRequestDto: ProductStockRequestDto): ResponseEntity<Boolean> {
         return try {
-            ResponseEntity.ok(orderService.createOrder(orderDTO))
+            orderService.createOrder(productStockRequestDto)
+            ResponseEntity.ok(true)
         } catch (e: IllegalArgumentException) {
-            ResponseEntity.badRequest().build()
+            ResponseEntity.badRequest().body(false)
         } catch (e: NoSuchElementException) {
-            ResponseEntity.notFound().build()
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(false)
         }
     }
+
 
     @PutMapping("/orders/{id}")
     fun updateOrder(@PathVariable id: Long, @RequestBody orderDTO: OrderDTO): ResponseEntity<OrderDTO> {

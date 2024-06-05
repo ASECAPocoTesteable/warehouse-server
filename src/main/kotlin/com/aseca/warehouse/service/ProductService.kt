@@ -38,7 +38,7 @@ class ProductService(
             throw IllegalArgumentException("Product quantity cannot be negative")
         }
 
-        val product = productRepository.findByProductId(updateProductDTO.id).orElseThrow { NoSuchElementException("Product not found") }
+        val product = productRepository.findById(updateProductDTO.id).orElseThrow { NoSuchElementException("Product not found") }
         val stock = stockRepository.findByProductId(product.idProduct).first()
         stock.quantity += updateProductDTO.addedQuantity
 
@@ -47,6 +47,7 @@ class ProductService(
 
         return ProductDTO(product.idProduct, product.name, stock.quantity)
     }
+
 
     @Transactional
     fun deleteProduct(id: Long) = productRepository.deleteById(id)

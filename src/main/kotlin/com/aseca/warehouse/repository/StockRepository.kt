@@ -8,13 +8,13 @@ import org.springframework.stereotype.Repository
 @Repository
 interface StockRepository : JpaRepository<Stock, Long> {
 
-    @Query("SELECT s FROM Stock s WHERE s.product.id = :productId")
+    @Query("SELECT s FROM Stock s WHERE s.product.idProduct = :productId")
     fun findByProductId(productId: Long): List<Stock>
 
-    @Query("SELECT s.quantity FROM Stock s WHERE s.product.id = :productId")
+    @Query("SELECT s.quantity FROM Stock s WHERE s.product.idProduct = :productId")
     fun findQuantityByProductId(productId: Long): Int
 
-    @Query("SELECT s FROM Stock s WHERE s.product.id = :productId")
+    @Query("SELECT s FROM Stock s WHERE s.product.idProduct = :productId")
     fun findStockByProductId(productId: Long): Stock
 
 }

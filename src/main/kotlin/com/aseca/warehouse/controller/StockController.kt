@@ -31,12 +31,16 @@ class StockController(@Autowired private val stockService: StockService) {
         }
     }
 
-    @GetMapping("/check")
+    @PostMapping("/check")
     fun checkStock(@RequestBody productStockRequestDto: ProductStockRequestDto): ResponseEntity<Boolean> {
-        val isStockAvailable = stockService.checkStock(productStockRequestDto)
-        if (!isStockAvailable) {
-            throw InsufficientStockException()
+        try {
+            val isStockAvailable = stockService.checkStock(productStockRequestDto)
+            if (!isStockAvailable) {
+                throw InsufficientStockException()
+            }
+            return ResponseEntity.ok(isStockAvailable)
+        } catch (e: NoSuchElementException) {
+            return ResponseEntity.badRequest().build()
         }
-        return ResponseEntity.ok(isStockAvailable)
     }
 }

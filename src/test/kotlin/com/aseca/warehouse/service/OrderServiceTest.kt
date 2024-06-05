@@ -1,10 +1,14 @@
 package com.aseca.warehouse.service
 
 import com.aseca.warehouse.model.*
+import com.aseca.warehouse.repository.OrderProductRepository
 import com.aseca.warehouse.repository.OrderRepository
 import com.aseca.warehouse.repository.ProductRepository
 import com.aseca.warehouse.util.OrderDTO
 import com.aseca.warehouse.util.OrderProductDTO
+import com.aseca.warehouse.util.ProductStock
+import com.aseca.warehouse.util.ProductStockRequestDto
+import org.junit.Before
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -37,25 +41,30 @@ class OrderServiceTest {
 
     private lateinit var orderService: OrderService
 
+    @Mock
+    private lateinit var orderProductRepository: OrderProductRepository
+
     @BeforeEach
     fun setUp() {
-        orderService = OrderService(orderRepository, productRepository, stockService, webClient)
+        orderService = OrderService(orderRepository, productRepository, stockService, webClient, orderProductRepository)
     }
 
     @Test
     fun `test createOrder`() {
-        val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(1, 10)))
-        val order = Order(STATUS.PENDING)
-        val product = Product("Test Product", idProduct = 1)
+        val productStockRequestDto = ProductStockRequestDto(
+            productList = listOf(ProductStock(productId = 1, quantity = 10))
+        )
+        val order = Order(status = STATUS.PENDING)
+        val product = Product(name = "Test Product", idProduct = 1)
 
         given(productRepository.findById(anyLong())).willReturn(Optional.of(product))
         given(orderRepository.save(order)).willReturn(order)
+        given(stockService.checkStock(productStockRequestDto)).willReturn(true)
 
-        val createdOrder = orderService.createOrder(orderDTO)
+        val result = orderService.createOrder(productStockRequestDto)
 
-        assertEquals(orderDTO.status, createdOrder.status)
+        assertEquals(true, result)
     }
-
     @Test
     fun `test createOrderCheck`() {
         val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(1, 10)))
