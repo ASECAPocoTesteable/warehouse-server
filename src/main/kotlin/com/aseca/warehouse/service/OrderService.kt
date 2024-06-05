@@ -1,15 +1,18 @@
 package com.aseca.warehouse.service
 
 import com.aseca.warehouse.model.*
+import com.aseca.warehouse.repository.OrderProductRepository
 import com.aseca.warehouse.repository.OrderRepository
 import com.aseca.warehouse.repository.ProductRepository
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import com.aseca.warehouse.util.OrderDTO
 import com.aseca.warehouse.util.OrderProductDTO
+import com.aseca.warehouse.util.ProductStockRequestDto
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
+import java.util.*
 
 @Service
 class OrderService(
@@ -17,34 +20,35 @@ class OrderService(
     private val productRepository: ProductRepository,
     private val stockService: StockService,
     private val webClient: WebClient,
+    private val orderProductRepository: OrderProductRepository
 ) {
 
-    @Transactional
-    fun createOrder(orderDTO: OrderDTO): OrderDTO {
+    fun createOrder(productStockRequestDto: ProductStockRequestDto): Boolean {
+        val isStockAvailable = stockService.checkStock(productStockRequestDto)
+        if (!isStockAvailable) {
+            throw IllegalArgumentException("Insufficient stock")
+        }
+
         val order = Order(status = STATUS.PENDING)
         val savedOrder = orderRepository.save(order)
-        savedOrder.orderProducts = orderDTO.orderProducts.map { createOrderProduct(it, savedOrder) }
-        return OrderDTO(
-            savedOrder.id,
-            savedOrder.status,
-            savedOrder.orderProducts.map {
-                OrderProductDTO(it.product.id, it.quantity)
-            }
-        )
+        val orderProducts = productStockRequestDto.productList.map {
+            createOrderProduct(OrderProductDTO(it.productId, it.quantity), savedOrder)
+        }
+        orderProductRepository.saveAll(orderProducts)
+        return true
     }
 
     @Transactional
     fun createOrderCheck(orderDTO: OrderDTO): Boolean {
         val order = Order(status = STATUS.PENDING)
         try {
-            order.orderProducts = orderDTO.orderProducts.map { createOrderProduct(it, order) }
+            order.orderProducts = orderDTO.orderProducts.map { createOrderProduct(it, order) }.toMutableList()
             orderRepository.save(order)
             return true
         } catch (e: IllegalArgumentException) {
             return false
         }
     }
-
 
     @Transactional
     fun updateOrderStatus(id: Long, status: STATUS): Order {
@@ -57,11 +61,12 @@ class OrderService(
     fun updateOrder(orderDTO: OrderDTO): OrderDTO {
         val order = orderRepository.findById(orderDTO.id).orElseThrow { NoSuchElementException("Order not found") }
         order.status = orderDTO.status
-        order.orderProducts = orderDTO.orderProducts.map { createOrderProduct(it, order) }
+        order.orderProducts = orderDTO.orderProducts.map { createOrderProduct(it, order) }.toMutableList()
+        val savedOrder = orderRepository.save(order)
         return OrderDTO(
-            order.id,
-            order.status,
-            order.orderProducts.map {
+            savedOrder.id,
+            savedOrder.status,
+            savedOrder.orderProducts.map {
                 OrderProductDTO(it.product.id, it.quantity)
             }
         )
@@ -163,7 +168,7 @@ class OrderService(
 
     private fun createOrderProduct(orderProductDTO: OrderProductDTO, order: Order): OrderProduct {
         val product = productRepository.findById(orderProductDTO.productId)
-            .orElseThrow() { NoSuchElementException("Product not found") }
+            .orElseThrow { NoSuchElementException("Product not found") }
         stockService.reduceProductStock(product.id, orderProductDTO.quantity)
         return OrderProduct(order = order, product = product, quantity = orderProductDTO.quantity)
     }

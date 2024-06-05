@@ -2,7 +2,6 @@ package com.aseca.warehouse.service
 
 import com.aseca.warehouse.model.Stock
 import com.aseca.warehouse.repository.StockRepository
-import com.aseca.warehouse.util.ProductStock
 import com.aseca.warehouse.util.ProductStockRequestDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

@@ -4,6 +4,8 @@ import com.aseca.warehouse.model.STATUS
 import com.aseca.warehouse.service.OrderService
 import com.aseca.warehouse.util.OrderDTO
 import com.aseca.warehouse.util.OrderProductDTO
+import com.aseca.warehouse.util.ProductStock
+import com.aseca.warehouse.util.ProductStockRequestDto
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -26,13 +28,13 @@ class OrderControllerTest {
 
     @Test
     fun `test createOrder`() {
-        val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(1, 10)))
+        val productStockRequestDto = ProductStockRequestDto(listOf(ProductStock(1, 10)))
 
-        `when`(orderService.createOrder(orderDTO)).thenReturn(orderDTO)
+        `when`(orderService.createOrder(productStockRequestDto)).thenReturn(true)
 
-        val response = orderController.createOrder(orderDTO)
+        val response = orderController.createOrder(productStockRequestDto)
 
-        assertEquals(ResponseEntity.ok(orderDTO), response)
+        assertEquals(ResponseEntity.ok(true), response)
     }
 
     @Test
@@ -76,12 +78,12 @@ class OrderControllerTest {
     }
 
     @Test
-    fun `test createOrder with exception`() {
-        val orderDTO = OrderDTO(1, STATUS.PENDING, listOf(OrderProductDTO(1, 10)))
+    fun `test createOrder with IllegalArgumentException`() {
+        val productStockRequestDto = ProductStockRequestDto(listOf(ProductStock(1, 10)))
 
-        `when`(orderService.createOrder(orderDTO)).thenThrow(IllegalArgumentException::class.java)
+        `when`(orderService.createOrder(productStockRequestDto)).thenThrow(IllegalArgumentException::class.java)
 
-        val response: ResponseEntity<OrderDTO> = orderController.createOrder(orderDTO)
+        val response = orderController.createOrder(productStockRequestDto)
 
         assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
     }
