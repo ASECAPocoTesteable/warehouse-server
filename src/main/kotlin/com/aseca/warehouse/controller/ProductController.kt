@@ -13,12 +13,12 @@ import java.util.*
 class ProductController(private val productService: ProductService) {
 
     @PostMapping("/add")
-    fun createProduct(@RequestBody product: ProductDTO): ResponseEntity<ProductDTO> {
+    fun createProduct(@RequestBody product: ProductDTO): ResponseEntity<*> {
         try {
-            val createdProduct = productService.createProduct(product)
-            return ResponseEntity.ok(createdProduct)
+            productService.createProduct(product)
+            return ResponseEntity.ok("success")
         } catch (e: RuntimeException) {
-            return ResponseEntity.notFound().build()
+            return ResponseEntity.badRequest().body(e.message)
         }
     }
 
