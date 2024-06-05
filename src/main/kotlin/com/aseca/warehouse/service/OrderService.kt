@@ -87,7 +87,7 @@ class OrderService(
                                     println("Error notifying control tower: ${e.message}")
                                 }
                                 .flatMap { success ->
-                                    if (success == "true") {
+                                    if (success == "Delivery service was reached successfully.") {
                                         Mono.just("Order status updated")
                                     } else {
                                         Mono.error(Exception("Failed to notify status update"))
