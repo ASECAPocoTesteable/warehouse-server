@@ -72,4 +72,14 @@ class OrderController(private val orderService: OrderService) {
             ResponseEntity.notFound().build()
         }
     }
+
+    @PutMapping("/picked-up/{id}")
+    fun notifyOrderPickedUp(@PathVariable id: Long): ResponseEntity<*> {
+        return try {
+            orderService.notifyOrderPickedUp(id)
+            ResponseEntity.ok("success")
+        } catch (e: Exception) {
+            ResponseEntity.badRequest().body(e.message)
+        }
+    }
 }
