@@ -34,7 +34,7 @@ class ProductService(
 
     @Transactional
     fun updateProduct(updateProductDTO: UpdateProductDTO): ProductDTO {
-        if (updateProductDTO.addedQuantity < 0) {
+        if (updateProductDTO.addedQuantity <= 0) {
             throw IllegalArgumentException("Product quantity cannot be negative")
         }
 
