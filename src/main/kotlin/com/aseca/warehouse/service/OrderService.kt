@@ -181,7 +181,7 @@ class OrderService(
     @Transactional
     fun notifyOrderPickedUp(id: Long){
         val order = orderRepository.findById(id).orElseThrow { NoSuchElementException("Order not found") }
-        if (order.status != STATUS.READY_FOR_PICKUP) {
+        if (!listOf(STATUS.READY_FOR_PICKUP, STATUS.PICKED_UP).contains(order.status)) {
             throw IllegalArgumentException("Order is not ready for pickup")
         }
         order.status = STATUS.PICKED_UP
