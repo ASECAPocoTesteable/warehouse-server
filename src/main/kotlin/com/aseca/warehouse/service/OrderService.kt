@@ -23,19 +23,24 @@ class OrderService(
     private val orderProductRepository: OrderProductRepository
 ) {
 
+    @Transactional
     fun createOrder(productStockRequestDto: ProductStockRequestDto): Boolean {
-        val isStockAvailable = stockService.checkStock(productStockRequestDto)
-        if (!isStockAvailable) {
-            throw IllegalArgumentException("Insufficient stock")
-        }
+        try {
+            val isStockAvailable = stockService.checkStock(productStockRequestDto)
+            if (!isStockAvailable) {
+                throw IllegalArgumentException("Insufficient stock")
+            }
 
-        val order = Order(status = STATUS.PENDING)
-        val savedOrder = orderRepository.save(order)
-        val orderProducts = productStockRequestDto.productList.map {
-            createOrderProduct(OrderProductDTO(it.productId, it.quantity), savedOrder)
+            val order = Order(status = STATUS.PENDING)
+            val savedOrder = orderRepository.save(order)
+            val orderProducts = productStockRequestDto.productList.map {
+                createOrderProduct(OrderProductDTO(it.productId, it.quantity), savedOrder)
+            }
+            orderProductRepository.saveAll(orderProducts)
+            return true
+        } catch (e: IllegalArgumentException) {
+            throw e
         }
-        orderProductRepository.saveAll(orderProducts)
-        return true
     }
 
     @Transactional
@@ -103,7 +108,6 @@ class OrderService(
                 Mono.error(throwable)
             }
     }
-
 
 
     fun getAllOrders(): List<OrderDTO> {
@@ -179,7 +183,7 @@ class OrderService(
     }
 
     @Transactional
-    fun notifyOrderPickedUp(id: Long){
+    fun notifyOrderPickedUp(id: Long) {
         val order = orderRepository.findById(id).orElseThrow { NoSuchElementException("Order not found") }
         if (!listOf(STATUS.READY_FOR_PICKUP, STATUS.PICKED_UP).contains(order.status)) {
             throw IllegalArgumentException("Order is not ready for pickup")

@@ -24,7 +24,7 @@ class OrderController(private val orderService: OrderService) {
         return try {
             orderService.createOrder(productStockRequestDto)
             ResponseEntity.ok(true)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: Exception) {
             ResponseEntity.badRequest().body(false)
         } catch (e: NoSuchElementException) {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(false)

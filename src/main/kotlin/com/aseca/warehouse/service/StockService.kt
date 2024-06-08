@@ -44,6 +44,7 @@ class StockService(@Autowired private val stockRepository: StockRepository) {
     fun checkStock(stockRequest: ProductStockRequestDto): Boolean {
         stockRequest.productList.forEach {
             val stock = stockRepository.findStockByProductId(it.productId)
+                ?: throw Exception("Stock not found for product: ${it.productId}")
             if (stock.quantity < it.quantity) {
                 return false
             }
