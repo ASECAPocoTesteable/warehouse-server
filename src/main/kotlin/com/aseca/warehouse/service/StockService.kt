@@ -15,7 +15,7 @@ class StockService(@Autowired private val stockRepository: StockRepository) {
     @Transactional
     fun updateStock(id: Long, stockDTO: StockDTO): Stock {
         if (stockDTO.quantity <= 0) {
-            throw IllegalArgumentException("Stock quantity cannot be negative")
+            throw IllegalArgumentException("Stock quantity cannot be 0 or less")
         }
 
         val stock = stockRepository.findById(id).orElseThrow { NoSuchElementException("Stock not found") }
@@ -25,8 +25,8 @@ class StockService(@Autowired private val stockRepository: StockRepository) {
 
     @Transactional
     fun createStock(stock: Stock): Stock {
-        if (stock.quantity < 0) {
-            throw IllegalArgumentException("Stock quantity cannot be negative")
+        if (stock.quantity <= 0) {
+            throw IllegalArgumentException("Stock quantity cannot be 0 or less")
         }
 
         val existingStocks = stockRepository.findByProductId(stock.product.idProduct)
