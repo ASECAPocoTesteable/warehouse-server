@@ -14,7 +14,7 @@ class StockService(@Autowired private val stockRepository: StockRepository) {
 
     @Transactional
     fun updateStock(id: Long, stockDTO: StockDTO): Stock {
-        if (stockDTO.quantity < 0) {
+        if (stockDTO.quantity <= 0) {
             throw IllegalArgumentException("Stock quantity cannot be negative")
         }
 
