@@ -1,17 +1,16 @@
 package com.aseca.warehouse.controller
 
-import com.aseca.warehouse.model.Product
 import com.aseca.warehouse.service.ProductService
 import com.aseca.warehouse.util.ProductDTO
 import com.aseca.warehouse.util.UpdateProductDTO
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.ResponseEntity
-import org.junit.jupiter.api.extension.ExtendWith
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -129,7 +128,6 @@ class ProductControllerTest {
 
     @Test
     fun `test updateProduct with exception`() {
-        val productDTO = ProductDTO(1, "Updated Test Product", 20)
         val updateInfoDTO = UpdateProductDTO(1, 10)
 
         `when`(productService.updateProduct(updateInfoDTO)).thenThrow(RuntimeException::class.java)

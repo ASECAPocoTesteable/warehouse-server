@@ -3,10 +3,11 @@ package com.aseca.warehouse.service
 import com.aseca.warehouse.model.Product
 import com.aseca.warehouse.model.Stock
 import com.aseca.warehouse.repository.StockRepository
-import com.aseca.warehouse.util.ProductStockRequestDto
 import com.aseca.warehouse.util.ProductStock
+import com.aseca.warehouse.util.ProductStockRequestDto
 import com.aseca.warehouse.util.StockDTO
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -98,7 +99,6 @@ class StockServiceTest {
     @Test
     fun `test getStockByProductId`() {
         val product = Product("Test Product", idProduct = 1)
-        val stock = Stock(10, product)
 
         `when`(stockRepository.findQuantityByProductId(product.idProduct)).thenReturn(10)
 
